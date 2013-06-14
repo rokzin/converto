@@ -1,10 +1,5 @@
 package com.rokzin.converto;
 
-import com.rokzin.converto.core.SlideHolder;
-import com.rokzin.converto.ui.MassView;
-import com.rokzin.converto.ui.TemperatureView;
-import com.rokzin.converto.utils.PreferenceSet;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Display;
@@ -17,6 +12,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
+
+import com.rokzin.converto.core.SlideHolder;
+import com.rokzin.converto.ui.MassView;
+import com.rokzin.converto.ui.TemperatureView;
+import com.rokzin.converto.utils.PreferenceSet;
 
 public class ConvertoActivity extends Activity {
 
@@ -39,6 +39,8 @@ public class ConvertoActivity extends Activity {
 		initialize();
 
 	}
+
+	// this is a test
 
 	private void initialize() {
 		Display display = getWindowManager().getDefaultDisplay();
