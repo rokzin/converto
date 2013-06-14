@@ -1,0 +1,25 @@
+<com.rokzin.converto.core.SlideHolder xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/slideHolder"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity" >
+
+
+    
+        <ListView 
+             android:layout_width="200dp"
+        	android:layout_height="fill_parent"
+        	android:background="@android:color/darker_gray"
+            android:id="@+id/menu_list"
+           ></ListView>
+
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inAnimation="@android:anim/slide_in_left"
+        android:outAnimation="@android:anim/slide_out_right" >
+            
+    </ViewSwitcher>
+</com.rokzin.converto.core.SlideHolder>
