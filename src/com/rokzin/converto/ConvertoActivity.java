@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.SlideHolder;
+import com.rokzin.converto.ui.LengthView;
 import com.rokzin.converto.ui.MassView;
 import com.rokzin.converto.ui.TemperatureView;
 import com.rokzin.converto.utils.PreferenceSet;
@@ -26,6 +27,7 @@ public class ConvertoActivity extends Activity {
 	private TemperatureView tv;
 	private ListView menu_items;
 	private Menu menu;
+	private LengthView lengthView;
 	public static int APP_HEIGHT;
 	public static int APP_WIDTH;
 
@@ -49,6 +51,7 @@ public class ConvertoActivity extends Activity {
 		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
 		mv = new MassView(ConvertoActivity.this);
 		tv = new TemperatureView(ConvertoActivity.this);
+		lengthView = new LengthView(ConvertoActivity.this);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
@@ -65,6 +68,11 @@ public class ConvertoActivity extends Activity {
 					setNewPage(mv);
 
 				}
+				if (selected_item == PreferenceSet.LENGTH) {
+					setNewPage(lengthView);
+
+				}
+
 			}
 
 			private void setNewPage(View v) {

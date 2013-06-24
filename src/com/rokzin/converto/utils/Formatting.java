@@ -6,7 +6,7 @@ import android.widget.EditText;
 
 public class Formatting {
 
-	public static double roundToFourDec(double value) {
+	public static double roundOff(double value) {
 
 		DecimalFormat fourDForm = new DecimalFormat("#.##########");
 		return Double.valueOf(fourDForm.format(value));

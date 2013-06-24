@@ -70,7 +70,7 @@ public class CustomView extends RelativeLayout {
 		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-		RelativeLayout.LayoutParams relativeParams3 = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		RelativeLayout.LayoutParams relativeParams3 = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		relativeParams3.addRule(RelativeLayout.BELOW, rInput.getId());
 
 		this.addView(rInput, relativeParams2);

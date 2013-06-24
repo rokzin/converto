@@ -73,13 +73,13 @@ public class Temperature {
 	}
 
 	private void convertFromCelcius(double value) {
-		double rCToFahrenheit = Formatting.roundToFourDec(value * 9 / 5 + 32);
-		double rCToKelvin = Formatting.roundToFourDec(value + 273.15);
-		double rCToRankine = Formatting.roundToFourDec((value + 273.15) * 9 / 5);
-		double rCToDelisle = Formatting.roundToFourDec((100 - value) * 3 / 2);
-		double rCToNewton = Formatting.roundToFourDec(value * 33 / 100);
-		double rCToReaumur = Formatting.roundToFourDec(value * 4 / 5);
-		double rCToRomer = Formatting.roundToFourDec(value * 21 / 40 + 7.5);
+		double rCToFahrenheit = Formatting.roundOff(value * 9 / 5 + 32);
+		double rCToKelvin = Formatting.roundOff(value + 273.15);
+		double rCToRankine = Formatting.roundOff((value + 273.15) * 9 / 5);
+		double rCToDelisle = Formatting.roundOff((100 - value) * 3 / 2);
+		double rCToNewton = Formatting.roundOff(value * 33 / 100);
+		double rCToReaumur = Formatting.roundOff(value * 4 / 5);
+		double rCToRomer = Formatting.roundOff(value * 21 / 40 + 7.5);
 
 		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(value)+"\u00B0C");
 		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToFahrenheit)+"\u00B0F");
@@ -101,38 +101,38 @@ public class Temperature {
 	}
 
 	private void convertFromFahrenheit(double value) {
-		double rFToC = Formatting.roundToFourDec((value - 32) * 5 / 9);
+		double rFToC = Formatting.roundOff((value - 32) * 5 / 9);
 		convertFromCelcius(rFToC);
 	}
 
 	private void convertFromKelvin(double value) {
-		double rKToC = Formatting.roundToFourDec(value - 273.15);
+		double rKToC = Formatting.roundOff(value - 273.15);
 		convertFromCelcius(rKToC);
 	}
 
 	private void convertFromRankine(double value) {
-		double rRToC = Formatting.roundToFourDec((value - 491.67) * 5 / 9);
+		double rRToC = Formatting.roundOff((value - 491.67) * 5 / 9);
 		convertFromCelcius(rRToC);
 	}
 
 	private void convertoFromDelisle(double value) {
-		double rDToC = Formatting.roundToFourDec(100 - value * 2 / 3);
+		double rDToC = Formatting.roundOff(100 - value * 2 / 3);
 		convertFromCelcius(rDToC);
 
 	}
 
 	private void convertFromNewton(double value) {
-		double rNToC = Formatting.roundToFourDec(value * 3.0303);
+		double rNToC = Formatting.roundOff(value * 3.0303);
 		convertFromCelcius(rNToC);
 	}
 
 	private void convertFromReaumur(double value) {
-		double rR1ToC = Formatting.roundToFourDec(value * 5 / 4);
+		double rR1ToC = Formatting.roundOff(value * 5 / 4);
 		convertFromCelcius(rR1ToC);
 	}
 
 	private void convertFromRomer(double value) {
-		double rR2ToC = Formatting.roundToFourDec((value - 7.5) * 40 / 21);
+		double rR2ToC = Formatting.roundOff((value - 7.5) * 40 / 21);
 		convertFromCelcius(rR2ToC);
 	}
 
