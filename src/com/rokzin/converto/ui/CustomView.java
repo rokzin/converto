@@ -3,6 +3,7 @@ package com.rokzin.converto.ui;
 import java.util.List;
 
 import android.content.Context;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -34,6 +35,8 @@ public class CustomView extends RelativeLayout {
 
 		rTitle = title;
 		rInput = new EditText(rContext);
+		rInput.setHint("Enter a number");
+		rInput.setInputType(InputType.TYPE_CLASS_NUMBER);
 		rInput.setId(1);
 		rSpinner = new Spinner(rContext);
 		rSpinner.setId(2);

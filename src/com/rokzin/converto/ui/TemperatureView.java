@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.rokzin.converto.units.Temperature;
+import com.rokzin.converto.utils.Formatting;
 
 public class TemperatureView extends CustomView {
 
@@ -40,9 +43,12 @@ public class TemperatureView extends CustomView {
 
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long id) {
-				Integer type = (int) (long) id;
-				rTemperature = new Temperature(type, Double.valueOf(rInput.getText().toString()));
-				setResults(rTemperature.getValues());
+				if (!Formatting.isEmptyOrNull(rInput)) {
+					Integer type = (int) (long) id;
+					rTemperature = new Temperature(type, Double.valueOf(rInput.getText().toString()));
+					setResults(rTemperature.getValues());
+				}
+
 			}
 
 			@Override
@@ -53,5 +59,21 @@ public class TemperatureView extends CustomView {
 			}
 		});
 
+		rInput.addTextChangedListener(new TextWatcher() {
+			public void afterTextChanged(Editable s) {
+				if (s.toString().equals("")) {
+				}
+				else {
+					rTemperature = new Temperature(rSpinner.getSelectedItemPosition(), Double.parseDouble(s.toString()));
+					setResults(rTemperature.getValues());
+				}
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+		});
 	}
 }
