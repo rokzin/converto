@@ -18,7 +18,7 @@
     android:paddingLeft="10sp"
     android:paddingRight="10sp"
     android:textSize="20sp"
-	android:background="@android:color/holo_blue_dark"                    >
+	                    >
 </TextView>
 
 

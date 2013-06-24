@@ -40,8 +40,6 @@ public class ConvertoActivity extends Activity {
 
 	}
 
-	// this is a test
-
 	private void initialize() {
 		Display display = getWindowManager().getDefaultDisplay();
 		APP_WIDTH = display.getWidth();

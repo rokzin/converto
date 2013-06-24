@@ -1,23 +1,25 @@
 package com.rokzin.converto.ui;
 
+import java.util.List;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 import com.rokzin.converto.ConvertoActivity;
 import com.rokzin.converto.R;
 
-public class CustomView extends LinearLayout {
+public class CustomView extends RelativeLayout {
 	Context rContext;
 	private String rTitle;
 
-	private Spinner rSpinner;
-	private EditText rInput;
-	private ListView rResultsList;
+	protected Spinner rSpinner;
+	protected EditText rInput;
+	private ResultsView rResultsView;
 
 	public CustomView(Context context) {
 		super(context);
@@ -29,19 +31,15 @@ public class CustomView extends LinearLayout {
 	}
 
 	public void initialize(String title) {
-		// this.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-		// LayoutParams.FILL_PARENT));
-		// this.setOrientation(LinearLayout.VERTICAL);
-		// this.setBackgroundColor(Color.rgb(229, 231, 230));
 
 		rTitle = title;
 		rInput = new EditText(rContext);
+		rInput.setId(1);
 		rSpinner = new Spinner(rContext);
-		rResultsList = new ListView(rContext);
+		rSpinner.setId(2);
+		rResultsView = new ResultsView(rContext);
+		rResultsView.setId(3);
 		rInput.setText("1");
-
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(rContext, R.layout.result_item, R.id.result_item, new String[] { "this", "that" });
-		rResultsList.setAdapter(adapter);
 		addViews();
 	}
 
@@ -51,9 +49,30 @@ public class CustomView extends LinearLayout {
 		return rTitle;
 	}
 
+	public void setResults(List<String> results) {
+		rResultsView.setResults(results);
+	}
+
+	public void setSpinnerValues(List<String> unitTypes) {
+		SpinnerAdapter rSpinnerAdapter = new ArrayAdapter<String>(rContext, R.layout.result_item, R.id.result_item, unitTypes);
+		rSpinner.setAdapter(rSpinnerAdapter);
+	}
+
 	private void addViews() {
-		this.addView(rInput, ConvertoActivity.APP_WIDTH / 2, 100);
-		this.addView(rSpinner, ConvertoActivity.APP_WIDTH / 2, 100);
-		// this.addView(rResultsList, ConvertoActivity.APP_WIDTH, 300);
+
+		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(ConvertoActivity.APP_WIDTH * 1 / 3, 100);
+		relativeParams.addRule(RelativeLayout.RIGHT_OF, rInput.getId());
+
+		RelativeLayout.LayoutParams relativeParams2 = new RelativeLayout.LayoutParams(ConvertoActivity.APP_WIDTH * 2 / 3, 100);
+		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+		RelativeLayout.LayoutParams relativeParams3 = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		relativeParams3.addRule(RelativeLayout.BELOW, rInput.getId());
+
+		this.addView(rInput, relativeParams2);
+		this.addView(rSpinner, relativeParams);
+		this.addView(rResultsView, relativeParams3);
+
 	}
 }
