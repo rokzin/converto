@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.SlideHolder;
+import com.rokzin.converto.ui.AreaView;
 import com.rokzin.converto.ui.LengthView;
 import com.rokzin.converto.ui.MassView;
 import com.rokzin.converto.ui.TemperatureView;
@@ -30,6 +31,7 @@ public class ConvertoActivity extends Activity {
 	private Menu menu;
 	private LengthView lengthView;
 	private VolumeView volumeView;
+	private AreaView areaView;
 	public static int APP_HEIGHT;
 	public static int APP_WIDTH;
 
@@ -55,6 +57,7 @@ public class ConvertoActivity extends Activity {
 		tv = new TemperatureView(ConvertoActivity.this);
 		lengthView = new LengthView(ConvertoActivity.this);
 		volumeView = new VolumeView(ConvertoActivity.this);
+		areaView = new AreaView(ConvertoActivity.this);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
@@ -79,6 +82,10 @@ public class ConvertoActivity extends Activity {
 					setNewPage(volumeView);
 
 				}
+				if (selected_item == PreferenceSet.AREA) {
+					setNewPage(areaView);
+
+				}
 
 			}
 
@@ -89,9 +96,11 @@ public class ConvertoActivity extends Activity {
 				menu.getItem(0).setTitle(v.toString());
 
 			}
+
 		});
 
-		viewSwitcher.addView(mv);
+		viewSwitcher.addView(tv);
+
 	}
 
 	@Override
@@ -106,6 +115,8 @@ public class ConvertoActivity extends Activity {
 				return true;
 			}
 		});
+		menu.getItem(0).setTitle(tv.toString());
+
 		return true;
 	}
 }

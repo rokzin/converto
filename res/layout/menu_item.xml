@@ -18,6 +18,8 @@
     android:paddingLeft="10sp"
     android:paddingRight="10sp"
     android:textSize="20sp"
+    
+    android:textColor="@android:color/white"
                     >
 </TextView>
 
