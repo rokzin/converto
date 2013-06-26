@@ -15,7 +15,8 @@ public class PreferenceSet {
 	public final static String AREA = "Area";
 	public final static String DEFAULTVIEW = "DefaultView";
 	public final static String CONTACTDEV = "ContactDev";
-	public final static String ROUNDOFF = "RoundOff";
+
+	public static final String PREF_ROUND_OFF = "prefRoundOff";
 
 	public static List<String> getMenuItems() {
 		List<String> menu_items = new ArrayList<String>();

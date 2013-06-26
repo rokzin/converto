@@ -73,6 +73,7 @@ public class Temperature {
 	}
 
 	private void convertFromCelcius(double value) {
+		double rCelcius = Formatting.roundOff(value);
 		double rCToFahrenheit = Formatting.roundOff(value * 9 / 5 + 32);
 		double rCToKelvin = Formatting.roundOff(value + 273.15);
 		double rCToRankine = Formatting.roundOff((value + 273.15) * 9 / 5);
@@ -90,7 +91,7 @@ public class Temperature {
 		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToReaumur)+"\u00B0Re");
 		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToRomer)+"\u00B0R");
 
-		rValues.add(String.valueOf(value) + "\u00B0C");
+		rValues.add(String.valueOf(rCelcius) + "\u00B0C");
 		rValues.add(String.valueOf(rCToFahrenheit) + "\u00B0F");
 		rValues.add(String.valueOf(rCToKelvin) + " K");
 		rValues.add(String.valueOf(rCToRankine) + "\u00B0R");
@@ -101,38 +102,38 @@ public class Temperature {
 	}
 
 	private void convertFromFahrenheit(double value) {
-		double rFToC = Formatting.roundOff((value - 32) * 5 / 9);
+		double rFToC = (value - 32) * 5 / 9;
 		convertFromCelcius(rFToC);
 	}
 
 	private void convertFromKelvin(double value) {
-		double rKToC = Formatting.roundOff(value - 273.15);
+		double rKToC = value - 273.15;
 		convertFromCelcius(rKToC);
 	}
 
 	private void convertFromRankine(double value) {
-		double rRToC = Formatting.roundOff((value - 491.67) * 5 / 9);
+		double rRToC = (value - 491.67) * 5 / 9;
 		convertFromCelcius(rRToC);
 	}
 
 	private void convertoFromDelisle(double value) {
-		double rDToC = Formatting.roundOff(100 - value * 2 / 3);
+		double rDToC = 100 - value * 2 / 3;
 		convertFromCelcius(rDToC);
 
 	}
 
 	private void convertFromNewton(double value) {
-		double rNToC = Formatting.roundOff(value * 3.0303);
+		double rNToC = value * 3.0303;
 		convertFromCelcius(rNToC);
 	}
 
 	private void convertFromReaumur(double value) {
-		double rR1ToC = Formatting.roundOff(value * 5 / 4);
+		double rR1ToC = value * 5 / 4;
 		convertFromCelcius(rR1ToC);
 	}
 
 	private void convertFromRomer(double value) {
-		double rR2ToC = Formatting.roundOff((value - 7.5) * 40 / 21);
+		double rR2ToC = (value - 7.5) * 40 / 21;
 		convertFromCelcius(rR2ToC);
 	}
 
