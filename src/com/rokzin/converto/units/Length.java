@@ -84,14 +84,14 @@ public class Length {
 		double rYard = Formatting.roundOff(rFeet / 3);
 		double rMile = Formatting.roundOff(rYard / 1760);
 
-		rValues.add(String.valueOf(rMillimeter) + "\nmm(s)");
-		rValues.add(String.valueOf(rCentimeter) + "\ncm(s)");
-		rValues.add(String.valueOf(rMeter) + "\nm(s)");
-		rValues.add(String.valueOf(rKilometer) + "\nkm(s)");
-		rValues.add(String.valueOf(rInch) + "\nin(s)");
-		rValues.add(String.valueOf(rFeet) + "\nft(s)");
-		rValues.add(String.valueOf(rYard) + "\nyard(s)");
-		rValues.add(String.valueOf(rMile) + "\n miles(s)");
+		rValues.add(String.valueOf(rMillimeter) + " mm(s)");
+		rValues.add(String.valueOf(rCentimeter) + " cm(s)");
+		rValues.add(String.valueOf(rMeter) + " m(s)");
+		rValues.add(String.valueOf(rKilometer) + " km(s)");
+		rValues.add(String.valueOf(rInch) + " in(s)");
+		rValues.add(String.valueOf(rFeet) + " ft(s)");
+		rValues.add(String.valueOf(rYard) + " yard(s)");
+		rValues.add(String.valueOf(rMile) + "  miles(s)");
 
 	}
 
