@@ -22,6 +22,7 @@ import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.SlideHolder;
 import com.rokzin.converto.ui.AreaView;
+import com.rokzin.converto.ui.CurrencyView;
 import com.rokzin.converto.ui.CustomView;
 import com.rokzin.converto.ui.LengthView;
 import com.rokzin.converto.ui.MassView;
@@ -46,7 +47,7 @@ public class ConvertoActivity extends Activity {
 	public static int APP_WIDTH;
 	public SharedPreferences rPreferences;
 	private OnSharedPreferenceChangeListener rPreferenceListener;
-	private View rCurrentView;
+	private CurrencyView currencyView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class ConvertoActivity extends Activity {
 		lengthView = new LengthView(ConvertoActivity.this);
 		volumeView = new VolumeView(ConvertoActivity.this);
 		areaView = new AreaView(ConvertoActivity.this);
+		currencyView = new CurrencyView(ConvertoActivity.this);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
@@ -114,20 +116,23 @@ public class ConvertoActivity extends Activity {
 					checkOrientationAndLoadView(0, areaView);
 
 				}
+				if (selected_item == PreferenceSet.CURRENCY) {
+					checkOrientationAndLoadView(0, currencyView);
+
+				}
 
 			}
 
 		});
 
 		viewSwitcher.addView(tv);
-		rCurrentView = tv;
 
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem item_type = menu.add("Type");
-		MenuItem item_settings = menu.add("Settings");
+		menu.add("Settings");
 		item_type.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		menu.getItem(0).setTitle(tv.toString());
 		this.menu = menu;
@@ -174,7 +179,7 @@ public class ConvertoActivity extends Activity {
 		menu.getItem(0).setTitle(currentView.toString());// set title
 		viewSwitcher.addView(currentView);
 
-		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			((CustomView) currentView).loadPotraitView();
 		}
