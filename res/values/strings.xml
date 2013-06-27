@@ -34,104 +34,10 @@
 	</string-array>
     <string name="pref_round_off_default">4</string>
 
-        
-        
-    <string-array name="units_temperature">
-        <item>&#186;C</item>
-        <item>&#186;F</item>
-        <item>K</item>
-        <item>&#186;R</item>
-        <item>&#186;De</item>
-        <item>&#186;N</item>
-        <item>&#186;R&#233;</item>
-        <item>&#186;R&#248;</item>
-    </string-array>
-    
-    <string-array name="units_length">
-        <item>mm(s)</item>
-        <item>cm(s)</item>
-        <item>m(s)</item>
-        <item>km(s)</item>
-        <item>in(s)</item>
-        <item>ft</item>
-        <item>yard(s)</item>
-        <item>mile(s)</item>
-    </string-array>
-    
-    <string-array name="units_area">
-        <item>mm<superscipt>2</superscipt></item>
-        <item>Sq. Cm.</item>
-        <item>Sq.M.</item>
-        <item>Sq. Km</item>
-        <item>Sq. In</item>
-        <item>Sq. Yard</item>
-        <item>Sq. Miles</item>
-        <item>Acre(s)</item>
-        <item>Are(s)</item>
-        <item>Decare(s)</item>
-        <item>Sq. Rod</item>
-    </string-array>
-    
-    <string-array name="units_volume">
-    <item>ml</item>
-	<item>L</item>
-	<item>Gal.(US)</item>
-	<item>Gal.(UK)</item>
-	<item>Fl. Oz.</item>
-	<item>Fl.Oz(UK)</item>
-	<item>cc</item>
-	<item>quart</item>
-	<item>quart (UK)</item>
-	<item>pint</item>
-	<item>pint (UK)</item>
-	<item>cu. mm</item>
-	<item>cu. m</item>
-	<item>cu. dec.</item>
-	<item>cu. ft</item>
-	<item>cu. in</item>
-	<item>gill (US)</item>
-	<item>gill (UK)</item>
-	<item>Barell (US)</item>
-	<item>Barell (UK)</item>
-	<item>Tbspn (US)</item>
-	<item>Tbspn (UK)</item>
-	<item>Tea spn (US)</item>
-	<item>Tea spn (UK)</item>
-	<item>Peck (US)</item>
-	<item>Peck (UK)</item>
-    </string-array>
-    
-    <string-array name="conversionTypes">
-        <item name="temperature">Temperature</item>
-        <item name="length">Length</item>
-        <item name="area">Area</item>
-        <item name="volume">Volume</item>
-        <item name="mass">Mass</item>
-        <item name="pressure">pressure</item>
-        <item name="speed">Speed</item>
-        <item name="power">Power</item>
-        <item name="energy">Energy</item>
-        <item name="angle">Angle</item>
-    </string-array>
-    
-    <string name="pref_temperature">Temperature</string>
-    	    <string name="pref_temperature_sum">Enable temperature conversion.</string>  
-    <string name="pref_length">Length</string>
-    	<string name="pref_length_sum">Enable Length conversion.</string>
-    <string name="pref_area">Area</string>
-    	<string name="pref_area_sum">Enable Area conversion.</string>
-    <string name="pref_volume">volume</string>
-    	<string name="pref_volume_sum">Enable volume conversion.</string>
-    <string name="pref_mass">Mass</string>
-    	<string name="pref_mass_sum">Enable mass conversion.</string>
-    <string name="pref_pressure">Pressure</string>
-    	<string name="pref_pressure_sum">Enable pressure conversion.</string>
-    <string name="pref_speed">Speed</string>
-    	<string name="pref_speed_sum">Enable speed conversion.</string>
-    <string name="pref_power">Power</string>
-    	<string name="pref_power_sum">Enable power conversion.</string>
-    <string name="pref_default_view">Default view on adding</string>
-    	<string name="pref_default_view_sum">Set the newly added view as the default view.</string>
+   
+
+    <string name="pref_default_view">Default view on Load</string>
+    	<string name="pref_default_view_sum">Set the default view on load.</string>
      <string name="pref_contact_dev">Contact developer</string>
     	<string name="pref_contact_dev_sum">Email developer about issues or enhancements.</string>
     

@@ -10,7 +10,7 @@
         <ListView 
              android:layout_width="200dp"
         	android:layout_height="fill_parent"
-        	android:background="@android:color/darker_gray"
+        	android:background="@android:color/holo_blue_light"
             android:id="@+id/menu_list"
            ></ListView>
 

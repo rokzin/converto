@@ -10,35 +10,26 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-import com.rokzin.converto.units.Temperature;
+import com.rokzin.converto.units.Currency;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class TemperatureView extends CustomView {
+public class CurrencyView extends CustomView {
 
-	private String TITLE = "Temperature";
+	private List<String> results = new ArrayList<String>();
+	private String selectedType;
 
-	private Temperature rTemperature;
-
-	public TemperatureView(Context context) {
+	public CurrencyView(Context context) {
 		super(context);
 		initialize();
 
 	}
 
 	private void initialize() {
-		super.initialize(PreferenceSet.TEMPERATURE);
+		super.initialize(PreferenceSet.CURRENCY);
 
-		List<String> temperatureTypes = new ArrayList<String>();
-		temperatureTypes.add("C");
-		temperatureTypes.add("F");
-		temperatureTypes.add("K");
-		temperatureTypes.add("R");
-		temperatureTypes.add("De");
-		temperatureTypes.add("N");
-		temperatureTypes.add("Re");
-		temperatureTypes.add("Ro");
-		setSpinnerValues(temperatureTypes);
+		setSpinnerValues(ConversionTypes.getCurrencyTypes());
 
 		rSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -46,17 +37,18 @@ public class TemperatureView extends CustomView {
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long id) {
 				if (!Formatting.isEmptyOrNull(rInput)) {
 					Integer type = (int) (long) id;
-					rTemperature = new Temperature(type, Double.valueOf(rInput.getText().toString()));
-					setResults(rTemperature.getValues());
+					selectedType = rSpinner.getItemAtPosition(type).toString();
+					Currency rCurrency = new Currency(selectedType);
+					setResults(rCurrency.getResults());
 				}
 
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				rTemperature = new Temperature(0, Double.valueOf(rInput.getText().toString()));
-				setResults(rTemperature.getValues());
 
+				Currency rCurrency = new Currency(rSpinner.getItemAtPosition(0).toString());
+				setResults(rCurrency.getResults());
 			}
 		});
 
@@ -65,8 +57,7 @@ public class TemperatureView extends CustomView {
 				if (s.toString().equals("")) {
 				}
 				else {
-					rTemperature = new Temperature(rSpinner.getSelectedItemPosition(), Double.parseDouble(s.toString()));
-					setResults(rTemperature.getValues());
+
 				}
 			}
 
@@ -77,4 +68,5 @@ public class TemperatureView extends CustomView {
 			}
 		});
 	}
+
 }

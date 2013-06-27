@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+   
+    
+    <PreferenceCategory android:title="@string/settings_other_setting" >
+        <ListPreference
+        android:key="prefRoundOff"
+        android:title="@string/pref_round_off"
+        android:dialogTitle="@string/pref_round_off_box_title"
+        android:entries="@array/pref_round_off_entries"
+        android:entryValues="@array/pref_round_off_values"
+        android:defaultValue="@string/pref_round_off_default" />
+        
+        <CheckBoxPreference 
+            	android:title="@string/pref_default_view" 
+            	android:summary="@string/pref_default_view_sum" 
+            	android:key="prefDefaultView"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/settings_about" >
+       
+        
+         <Preference 
+            	android:title="@string/pref_contact_dev" 
+            	android:summary="@string/pref_contact_dev_sum" 
+            	android:key="prefContactDev"/>
+    </PreferenceCategory>
+    
+    
+   
+
+</PreferenceScreen>

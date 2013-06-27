@@ -13,9 +13,11 @@ public class PreferenceSet {
 	public final static String SPEED = "Speed";
 	public final static String VOLUME = "Volume";
 	public final static String AREA = "Area";
+	public final static String CURRENCY = "Currency";
 	public final static String DEFAULTVIEW = "DefaultView";
 	public final static String CONTACTDEV = "ContactDev";
-	public final static String ROUNDOFF = "RoundOff";
+
+	public static final String PREF_ROUND_OFF = "prefRoundOff";
 
 	public static List<String> getMenuItems() {
 		List<String> menu_items = new ArrayList<String>();
@@ -27,6 +29,7 @@ public class PreferenceSet {
 		menu_items.add(SPEED);
 		menu_items.add(VOLUME);
 		menu_items.add(AREA);
+		menu_items.add(CURRENCY);
 
 		return menu_items;
 	}
