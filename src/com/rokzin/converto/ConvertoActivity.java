@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.SlideHolder;
+import com.rokzin.converto.ui.AngleView;
 import com.rokzin.converto.ui.AreaView;
 import com.rokzin.converto.ui.CurrencyView;
 import com.rokzin.converto.ui.CustomView;
@@ -32,6 +33,7 @@ import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 import com.rokzin.converto.utils.SettingsActivity;
 
+//Robin - Rohit
 public class ConvertoActivity extends Activity {
 
 	private SlideHolder mSlideHolder;
@@ -43,6 +45,7 @@ public class ConvertoActivity extends Activity {
 	private LengthView lengthView;
 	private VolumeView volumeView;
 	private AreaView areaView;
+	private AngleView angleView;
 	public static int APP_HEIGHT;
 	public static int APP_WIDTH;
 	public SharedPreferences rPreferences;
@@ -88,7 +91,7 @@ public class ConvertoActivity extends Activity {
 		volumeView = new VolumeView(ConvertoActivity.this);
 		areaView = new AreaView(ConvertoActivity.this);
 		currencyView = new CurrencyView(ConvertoActivity.this);
-
+		angleView = new AngleView(ConvertoActivity.this);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
 		menu_items.setOnItemClickListener(new OnItemClickListener() {
@@ -119,6 +122,9 @@ public class ConvertoActivity extends Activity {
 				if (selected_item == PreferenceSet.CURRENCY) {
 					checkOrientationAndLoadView(0, currencyView);
 
+				}
+				if(selected_item == PreferenceSet.ANGLE){
+					checkOrientationAndLoadView(0, angleView);
 				}
 
 			}

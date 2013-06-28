@@ -17,17 +17,27 @@ import com.rokzin.converto.utils.ConversionTypes;
 public class Currency {
 
 	private List<String> results = new ArrayList<String>();
+	private List<Double> resultValues = new ArrayList<Double>();
 
-	private String rConvertFrom;
+	public Currency(String convertFrom, double value) {
+		getdata(convertFrom, value);
+		addTypeToValue();
+	}
 
-	public Currency(String convertFrom) {
-		rConvertFrom = convertFrom;
-		new Thread(new Runnable() {
-			public void run() {
-				getdata(rConvertFrom);
+	private void addTypeToValue() {
+		for (int i = 0; i < resultValues.size(); i++) {
+			if (i == 0)
+				results.add(resultValues.get(i) + " USD");
+			if (i == 1)
+				results.add(resultValues.get(i) + " EUR");
+			if (i == 2)
+				results.add(resultValues.get(i) + " GBP");
+			if (i == 3)
+				results.add(resultValues.get(i) + " CNY");
+			if (i == 4)
+				results.add(resultValues.get(i) + " INR");
 
-			}
-		}).start();
+		}
 
 	}
 
@@ -56,14 +66,14 @@ public class Currency {
 
 	}
 
-	public void getdata(String convertFrom) {
+	public void getdata(String convertFrom, double value) {
 
 		try {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 			URL url = new URL(buildURL(convertFrom));
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			readStream(con.getInputStream());
+			readStream(con.getInputStream(), value);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,13 +81,15 @@ public class Currency {
 
 	}
 
-	private void readStream(InputStream in) {
+	private void readStream(InputStream in, double value) {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new InputStreamReader(in));
 			String line = "";
 			while ((line = reader.readLine()) != null) {
-				results.add(line);
+				String splitLine[] = line.split(",");
+				splitLine[1] = splitLine[1].replace("\"", "");
+				resultValues.add(Double.valueOf(splitLine[1]) * value);
 				Log.d("debuggin", line);
 			}
 		} catch (IOException e) {

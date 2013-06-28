@@ -1,8 +1,5 @@
 package com.rokzin.converto.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,7 +14,6 @@ import com.rokzin.converto.utils.PreferenceSet;
 
 public class CurrencyView extends CustomView {
 
-	private List<String> results = new ArrayList<String>();
 	private String selectedType;
 
 	public CurrencyView(Context context) {
@@ -38,7 +34,7 @@ public class CurrencyView extends CustomView {
 				if (!Formatting.isEmptyOrNull(rInput)) {
 					Integer type = (int) (long) id;
 					selectedType = rSpinner.getItemAtPosition(type).toString();
-					Currency rCurrency = new Currency(selectedType);
+					Currency rCurrency = new Currency(selectedType, Double.valueOf(rInput.getText().toString()));
 					setResults(rCurrency.getResults());
 				}
 
@@ -47,7 +43,7 @@ public class CurrencyView extends CustomView {
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 
-				Currency rCurrency = new Currency(rSpinner.getItemAtPosition(0).toString());
+				Currency rCurrency = new Currency(rSpinner.getItemAtPosition(0).toString(), Double.valueOf(rInput.getText().toString()));
 				setResults(rCurrency.getResults());
 			}
 		});
@@ -57,7 +53,8 @@ public class CurrencyView extends CustomView {
 				if (s.toString().equals("")) {
 				}
 				else {
-
+					Currency rCurrency = new Currency(rSpinner.getItemAtPosition(0).toString(), Double.valueOf(rInput.getText().toString()));
+					setResults(rCurrency.getResults());
 				}
 			}
 
