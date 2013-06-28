@@ -1,8 +1,5 @@
 package com.rokzin.converto.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,13 +7,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.units.Temperature;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class TemperatureView extends CustomView {
-
-	private String TITLE = "Temperature";
+public class TemperatureView extends CustomView implements ICustomView {
 
 	private Temperature rTemperature;
 
@@ -29,16 +26,7 @@ public class TemperatureView extends CustomView {
 	private void initialize() {
 		super.initialize(PreferenceSet.TEMPERATURE);
 
-		List<String> temperatureTypes = new ArrayList<String>();
-		temperatureTypes.add("C");
-		temperatureTypes.add("F");
-		temperatureTypes.add("K");
-		temperatureTypes.add("R");
-		temperatureTypes.add("De");
-		temperatureTypes.add("N");
-		temperatureTypes.add("Re");
-		temperatureTypes.add("Ro");
-		setSpinnerValues(temperatureTypes);
+		setSpinnerValues(ConversionTypes.getTemperatureTypes());
 
 		rSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -76,5 +64,11 @@ public class TemperatureView extends CustomView {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 		});
+	}
+
+	@Override
+	public void reinitialize() {
+		rTemperature = new Temperature(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
+		setResults(rTemperature.getValues());
 	}
 }

@@ -25,7 +25,7 @@ public class ResultsView extends ListView {
 
 	public void setResults(ArrayList<ResultItem> results) {
 
-		setAdapter(new ResultBaseAdapter(rContext, results));
+		this.setAdapter(new ResultBaseAdapter(rContext, results));
 
 	}
 }

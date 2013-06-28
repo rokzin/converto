@@ -1,8 +1,5 @@
 package com.rokzin.converto.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,11 +7,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.units.Area;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class AreaView extends CustomView {
+public class AreaView extends CustomView implements ICustomView {
 
 	Area rArea;
 
@@ -33,20 +32,7 @@ public class AreaView extends CustomView {
 		 * Square-Mile 8 : Acre 9 : Are 10: Decare 11: Square Rod
 		 */
 
-		List<String> areaTypes = new ArrayList<String>();
-		areaTypes.add("Sq mm");
-		areaTypes.add("Sq Cm");
-		areaTypes.add("Sq M");
-		areaTypes.add("Sq Km");
-		areaTypes.add("Sq In");
-		areaTypes.add("Sq Ft");
-		areaTypes.add("Sq Yd");
-		areaTypes.add("Sq Miles");
-		areaTypes.add("Acre");
-		areaTypes.add("Are");
-		areaTypes.add("Sq Rod");
-
-		setSpinnerValues(areaTypes);
+		setSpinnerValues(ConversionTypes.getAreaTypes());
 
 		rSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -84,6 +70,13 @@ public class AreaView extends CustomView {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 		});
+	}
+
+	@Override
+	public void reinitialize() {
+		rArea = new Area(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
+		setResults(rArea.getValues());
+
 	}
 
 }

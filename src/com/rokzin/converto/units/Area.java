@@ -1,12 +1,13 @@
 package com.rokzin.converto.units;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import com.rokzin.converto.core.ResultItem;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 
 public class Area {
-	List<String> rValues = new ArrayList<String>();
+	ArrayList<ResultItem> rValues = new ArrayList<ResultItem>();
 
 	public Area(int type, double value) {
 
@@ -105,19 +106,31 @@ public class Area {
 		double rAre = 0.0;// TODO
 		double rDecare = 0.0;// TODO
 		double rSquareRod = 0.0;// TODO
-		rValues.add(String.valueOf(rSqMillimeter) + " Sq.mm");
-		rValues.add(String.valueOf(rSqCentimeter + " Sq.Cm"));
-		rValues.add(String.valueOf(rSqMeter + " Sq.M"));
-		rValues.add(String.valueOf(rSqKilometer + " Sq.km"));
-		rValues.add(String.valueOf(rSqInch + " Sq.In"));
-		rValues.add(String.valueOf(rSqFeet + " Sq.ft"));
-		rValues.add(String.valueOf(rSqYard + " Sq.yards"));
-		rValues.add(String.valueOf(rSqMile + " Sq.Miles"));
-		// rValues.add(String.valueOf(rAcre));
+
+		ArrayList<Double> results = new ArrayList<Double>();
+		results.add(rSqMillimeter);
+		results.add(rSqCentimeter);
+		results.add(rSqMeter);
+		results.add(rSqKilometer);
+		results.add(rSqInch);
+		results.add(rSqFeet);
+		results.add(rSqYard);
+		results.add(rSqMile);
+		results.add(rAcre);
+		results.add(rAre);
+		results.add(rDecare);
+		results.add(rSquareRod);
+
+		for (int i = 0; i < results.size(); i++) {
+			ResultItem ri = new ResultItem();
+			ri.setValue(results.get(i));
+			ri.setUnitType(ConversionTypes.getAreaTypes()[i]);
+			rValues.add(ri);
+		}
 
 	}
 
-	public List<String> getValues() {
+	public ArrayList<ResultItem> getValues() {
 		return rValues;
 	}
 

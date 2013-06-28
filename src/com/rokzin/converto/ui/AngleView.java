@@ -8,12 +8,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.units.Angle;
 import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class AngleView extends CustomView {
+public class AngleView extends CustomView implements ICustomView {
 
 	Angle rAngle;
 
@@ -85,6 +86,13 @@ public class AngleView extends CustomView {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 		});
+	}
+
+	@Override
+	public void reinitialize() {
+		rAngle = new Angle(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
+		setResults(rAngle.getValues());
+
 	}
 
 }

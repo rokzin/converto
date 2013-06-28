@@ -1,13 +1,14 @@
 package com.rokzin.converto.units;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import com.rokzin.converto.core.ResultItem;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 
 public class Length {
 
-	List<String> rValues = new ArrayList<String>();
+	ArrayList<ResultItem> rValues = new ArrayList<ResultItem>();
 
 	public Length(int type, double value) {
 
@@ -84,18 +85,27 @@ public class Length {
 		double rYard = Formatting.roundOff(rFeet / 3);
 		double rMile = Formatting.roundOff(rYard / 1760);
 
-		rValues.add(String.valueOf(rMillimeter) + " mm(s)");
-		rValues.add(String.valueOf(rCentimeter) + " cm(s)");
-		rValues.add(String.valueOf(rMeter) + " m(s)");
-		rValues.add(String.valueOf(rKilometer) + " km(s)");
-		rValues.add(String.valueOf(rInch) + " in(s)");
-		rValues.add(String.valueOf(rFeet) + " ft(s)");
-		rValues.add(String.valueOf(rYard) + " yard(s)");
-		rValues.add(String.valueOf(rMile) + "  miles(s)");
+		ArrayList<Double> results = new ArrayList<Double>();
+
+		results.add(rMillimeter);
+		results.add(rCentimeter);
+		results.add(rMeter);
+		results.add(rKilometer);
+		results.add(rInch);
+		results.add(rFeet);
+		results.add(rYard);
+		results.add(rMile);
+
+		for (int i = 0; i < results.size(); i++) {
+			ResultItem ri = new ResultItem();
+			ri.setValue(results.get(i));
+			ri.setUnitType(ConversionTypes.getLengthTypes()[i]);
+			rValues.add(ri);
+		}
 
 	}
 
-	public List<String> getValues() {
+	public ArrayList<ResultItem> getValues() {
 		return rValues;
 	}
 

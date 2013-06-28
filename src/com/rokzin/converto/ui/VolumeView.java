@@ -1,8 +1,5 @@
 package com.rokzin.converto.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,11 +7,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.units.Volume;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class VolumeView extends CustomView {
+public class VolumeView extends CustomView implements ICustomView {
 
 	Volume rVolume;
 
@@ -56,35 +55,7 @@ public class VolumeView extends CustomView {
 		 * 25. Peck UK
 		 */
 
-		List<String> volumeTypes = new ArrayList<String>();
-		volumeTypes.add("ml");
-		volumeTypes.add("L");
-		volumeTypes.add("Gal");
-		volumeTypes.add("Imp. Gal");
-		volumeTypes.add("Fl Oz");
-		volumeTypes.add("Fl Oz (UK)");
-		volumeTypes.add("CC");
-		volumeTypes.add("Quart");
-		volumeTypes.add("Quart (UK)");
-		volumeTypes.add("Pint");
-		volumeTypes.add("Pint (UK)");
-		volumeTypes.add("Cubic mms");
-		volumeTypes.add("Cubic Mts");
-		volumeTypes.add("Cubic Dec(s)");
-		volumeTypes.add("Cubic Ft");
-		volumeTypes.add("Cubic In(s)");
-		volumeTypes.add("Gill");
-		volumeTypes.add("Gill (UK)");
-		volumeTypes.add("Oil Barrel");
-		volumeTypes.add("Oil Barrel (UK)");
-		volumeTypes.add("Tbspn");
-		volumeTypes.add("Tbspn (UK)");
-		volumeTypes.add("Teaspn");
-		volumeTypes.add("Teaspn (UK)");
-		volumeTypes.add("Peck");
-		volumeTypes.add("Peck (UK)");
-
-		setSpinnerValues(volumeTypes);
+		setSpinnerValues(ConversionTypes.getVolumeTypes());
 
 		rSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -122,6 +93,13 @@ public class VolumeView extends CustomView {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 		});
+	}
+
+	@Override
+	public void reinitialize() {
+		rVolume = new Volume(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
+		setResults(rVolume.getValues());
+
 	}
 
 }

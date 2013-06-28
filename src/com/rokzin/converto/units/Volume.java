@@ -1,12 +1,13 @@
 package com.rokzin.converto.units;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import com.rokzin.converto.core.ResultItem;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 
 public class Volume {
-	List<String> rValues = new ArrayList<String>();
+	ArrayList<ResultItem> rValues = new ArrayList<ResultItem>();
 
 	public Volume(int type, double value) {
 
@@ -203,36 +204,45 @@ public class Volume {
 		double peckUS = Formatting.roundOff(value * 0.11351);
 		double peckUK = Formatting.roundOff(value * 0.109985);
 
-		rValues.add(String.valueOf(milliLiter) + " ml");
-		rValues.add(String.valueOf(litre + " L"));
-		rValues.add(String.valueOf(gallonUS + " Gal.(US)"));
-		rValues.add(String.valueOf(imperialGallonUK + " Gal.(UK)"));
-		rValues.add(String.valueOf(flOzUS + " Fl. Oz."));
-		rValues.add(String.valueOf(flOzUK + " Fl.Oz(UK)"));
-		rValues.add(String.valueOf(CC + " cc"));
-		rValues.add(String.valueOf(quartUS + " quart"));
-		rValues.add(String.valueOf(quartUK + " quart (UK)"));
-		rValues.add(String.valueOf(pintUS + " pint"));
-		rValues.add(String.valueOf(pintUK + " pint (UK)"));
-		rValues.add(String.valueOf(cubicMMs + " cu. mm"));
-		rValues.add(String.valueOf(cubicMeters + " cu. m"));
-		rValues.add(String.valueOf(cubicDecimeter + " cu. dec."));
-		rValues.add(String.valueOf(cubicFeet + " cu. ft"));
-		rValues.add(String.valueOf(cubicInches + " cu. in"));
-		rValues.add(String.valueOf(gillUS + " gill (US)"));
-		rValues.add(String.valueOf(gillUK + " gill (UK)"));
-		rValues.add(String.valueOf(oilBarrelUS + " Barell (US)"));
-		rValues.add(String.valueOf(oilBarrelUK + " Barell (UK)"));
-		rValues.add(String.valueOf(tablespoonUS + " Tbspn (US)"));
-		rValues.add(String.valueOf(tablespoonUK + " Tbspn (UK)"));
-		rValues.add(String.valueOf(teaspoonUS + " Tea spn (US)"));
-		rValues.add(String.valueOf(teaspoonUK + " Tea spn (UK)"));
-		rValues.add(String.valueOf(peckUS + " Peck (US)"));
-		rValues.add(String.valueOf(peckUK + " Peck (UK)"));
+		ArrayList<Double> results = new ArrayList<Double>();
+
+		results.add(milliLiter);
+		results.add(litre);
+		results.add(gallonUS);
+		results.add(imperialGallonUK);
+		results.add(flOzUS);
+		results.add(flOzUK);
+		results.add(CC);
+		results.add(quartUS);
+		results.add(quartUK);
+		results.add(pintUS);
+		results.add(pintUK);
+		results.add(cubicMMs);
+		results.add(cubicMeters);
+		results.add(cubicDecimeter);
+		results.add(cubicFeet);
+		results.add(cubicInches);
+		results.add(gillUS);
+		results.add(gillUK);
+		results.add(oilBarrelUS);
+		results.add(oilBarrelUK);
+		results.add(tablespoonUS);
+		results.add(tablespoonUK);
+		results.add(teaspoonUS);
+		results.add(teaspoonUK);
+		results.add(peckUS);
+		results.add(peckUK);
+
+		for (int i = 0; i < results.size(); i++) {
+			ResultItem ri = new ResultItem();
+			ri.setValue(results.get(i));
+			ri.setUnitType(ConversionTypes.getVolumeTypes()[i]);
+			rValues.add(ri);
+		}
 
 	}
 
-	public List<String> getValues() {
+	public ArrayList<ResultItem> getValues() {
 		return rValues;
 	}
 

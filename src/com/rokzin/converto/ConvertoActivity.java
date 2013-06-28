@@ -20,9 +20,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
 import com.rokzin.converto.ui.AngleView;
+import com.rokzin.converto.ui.AreaView;
 import com.rokzin.converto.ui.CustomView;
+import com.rokzin.converto.ui.LengthView;
+import com.rokzin.converto.ui.MassView;
+import com.rokzin.converto.ui.TemperatureView;
+import com.rokzin.converto.ui.VolumeView;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 import com.rokzin.converto.utils.SettingsActivity;
@@ -35,12 +41,12 @@ public class ConvertoActivity extends Activity {
 
 	private ListView menu_items;
 	private Menu menu;
-	// private LengthView lengthView;
-	// private VolumeView volumeView;
-	// private AreaView areaView;
+	private LengthView lengthView;
+	private VolumeView volumeView;
+	private AreaView areaView;
 	// private CurrencyView currencyView;
-	// private MassView mv;
-	// private TemperatureView tv;
+	private MassView massView;
+	private TemperatureView temperatureView;
 	private AngleView angleView;
 	public static int APP_HEIGHT;
 	public static int APP_WIDTH;
@@ -80,11 +86,11 @@ public class ConvertoActivity extends Activity {
 		rPreferences.registerOnSharedPreferenceChangeListener(rPreferenceListener);
 		menu_items = (ListView) findViewById(R.id.menu_list);
 		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
-		// mv = new MassView(ConvertoActivity.this);
-		// tv = new TemperatureView(ConvertoActivity.this);
-		// lengthView = new LengthView(ConvertoActivity.this);
-		// volumeView = new VolumeView(ConvertoActivity.this);
-		// areaView = new AreaView(ConvertoActivity.this);
+		massView = new MassView(ConvertoActivity.this);
+		temperatureView = new TemperatureView(ConvertoActivity.this);
+		lengthView = new LengthView(ConvertoActivity.this);
+		volumeView = new VolumeView(ConvertoActivity.this);
+		areaView = new AreaView(ConvertoActivity.this);
 		// currencyView = new CurrencyView(ConvertoActivity.this);
 		angleView = new AngleView(ConvertoActivity.this);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
@@ -94,26 +100,26 @@ public class ConvertoActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> av, View v, int id, long id2) {
 				String selected_item = (String) menu_items.getItemAtPosition(id);
-				// if (selected_item == PreferenceSet.TEMPERATURE) {
-				// checkOrientationAndLoadView(0, tv);
-				//
-				// }
-				// if (selected_item == PreferenceSet.MASS) {
-				// checkOrientationAndLoadView(0, mv);
-				//
-				// }
-				// if (selected_item == PreferenceSet.LENGTH) {
-				// checkOrientationAndLoadView(0, lengthView);
-				//
-				// }
-				// if (selected_item == PreferenceSet.VOLUME) {
-				// checkOrientationAndLoadView(0, volumeView);
-				//
-				// }
-				// if (selected_item == PreferenceSet.AREA) {
-				// checkOrientationAndLoadView(0, areaView);
-				//
-				// }
+				if (selected_item == PreferenceSet.TEMPERATURE) {
+					checkOrientationAndLoadView(0, temperatureView);
+
+				}
+				if (selected_item == PreferenceSet.MASS) {
+					checkOrientationAndLoadView(0, massView);
+
+				}
+				if (selected_item == PreferenceSet.LENGTH) {
+					checkOrientationAndLoadView(0, lengthView);
+
+				}
+				if (selected_item == PreferenceSet.VOLUME) {
+					checkOrientationAndLoadView(0, volumeView);
+
+				}
+				if (selected_item == PreferenceSet.AREA) {
+					checkOrientationAndLoadView(0, areaView);
+
+				}
 				// if (selected_item == PreferenceSet.CURRENCY) {
 				// checkOrientationAndLoadView(0, currencyView);
 				//
@@ -183,9 +189,15 @@ public class ConvertoActivity extends Activity {
 		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			((CustomView) currentView).loadPotraitView();
+			if (currentView instanceof ICustomView) {
+				((ICustomView) currentView).reinitialize();
+			}
 		}
 		else {
 			((CustomView) currentView).loadLandscapeView();
+			if (currentView instanceof ICustomView) {
+				((ICustomView) currentView).reinitialize();
+			}
 		}
 
 	}

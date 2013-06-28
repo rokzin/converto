@@ -40,6 +40,7 @@ public class Formatting {
 	}
 
 	public static boolean isEmptyOrNull(EditText editText) {
+		// sanity check
 
 		String test = editText.getText().toString();
 

@@ -1,13 +1,14 @@
 package com.rokzin.converto.units;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import com.rokzin.converto.core.ResultItem;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 
 public class Temperature {
 
-	private List<String> rValues = new ArrayList<String>();
+	private ArrayList<ResultItem> rValues = new ArrayList<ResultItem>();
 
 	String rInputValue;
 
@@ -67,12 +68,13 @@ public class Temperature {
 		// rValues.clear();
 	}
 
-	public List<String> getValues() {
+	public ArrayList<ResultItem> getValues() {
 
 		return rValues;
 	}
 
 	private void convertFromCelcius(double value) {
+
 		double rCelcius = Formatting.roundOff(value);
 		double rCToFahrenheit = Formatting.roundOff(value * 9 / 5 + 32);
 		double rCToKelvin = Formatting.roundOff(value + 273.15);
@@ -82,23 +84,22 @@ public class Temperature {
 		double rCToReaumur = Formatting.roundOff(value * 4 / 5);
 		double rCToRomer = Formatting.roundOff(value * 21 / 40 + 7.5);
 
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(value)+"\u00B0C");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToFahrenheit)+"\u00B0F");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToKelvin)+" K");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToRankine)+"\u00B0R");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToDelisle)+"\u00B0De");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToNewton)+"\u00B0N");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToReaumur)+"\u00B0Re");
-		// rValues.add(rInputValue+TemperatureView.rSelectedUnit+" = "+String.valueOf(rCToRomer)+"\u00B0R");
+		ArrayList<Double> results = new ArrayList<Double>();
+		results.add(rCelcius);
+		results.add(rCToFahrenheit);
+		results.add(rCToKelvin);
+		results.add(rCToRankine);
+		results.add(rCToDelisle);
+		results.add(rCToNewton);
+		results.add(rCToReaumur);
+		results.add(rCToRomer);
 
-		rValues.add(String.valueOf(rCelcius) + "\u00B0C");
-		rValues.add(String.valueOf(rCToFahrenheit) + "\u00B0F");
-		rValues.add(String.valueOf(rCToKelvin) + " K");
-		rValues.add(String.valueOf(rCToRankine) + "\u00B0R");
-		rValues.add(String.valueOf(rCToDelisle) + "\u00B0De");
-		rValues.add(String.valueOf(rCToNewton) + "\u00B0N");
-		rValues.add(String.valueOf(rCToReaumur) + "\u00B0Re");
-		rValues.add(String.valueOf(rCToRomer) + "\u00B0R");
+		for (int i = 0; i < results.size(); i++) {
+			ResultItem ri = new ResultItem();
+			ri.setValue(results.get(i));
+			ri.setUnitType(ConversionTypes.getTemperatureTypes()[i]);
+			rValues.add(ri);
+		}
 	}
 
 	private void convertFromFahrenheit(double value) {
