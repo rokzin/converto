@@ -1,13 +1,13 @@
 package com.rokzin.converto.ui;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.rokzin.converto.R;
+import com.rokzin.converto.core.ResultBaseAdapter;
+import com.rokzin.converto.core.ResultItem;
 
 public class ResultsView extends ListView {
 
@@ -23,9 +23,9 @@ public class ResultsView extends ListView {
 		rContext = context;
 	}
 
-	public void setResults(List<String> results) {
-		ArrayAdapter<String> resultsAdapter = new ArrayAdapter<String>(rContext, R.layout.result_item, R.id.result_item, results);
-		setAdapter(resultsAdapter);
+	public void setResults(ArrayList<ResultItem> results) {
+
+		setAdapter(new ResultBaseAdapter(rContext, results));
 
 	}
 }

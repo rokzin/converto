@@ -4,21 +4,38 @@
     
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:descendantFocusability="blocksDescendants"
  	>
 
 <TextView 
-    android:layout_width="match_parent"
-    android:layout_height="63sp"
-    android:id="@+id/result_item"
-    android:gravity="center_vertical|center_horizontal"
-    android:paddingTop="10sp"
-    android:paddingBottom="10sp"
+    android:layout_width="0dp"
+    android:layout_height="75sp"
+    android:id="@+id/result_value"
+    android:gravity="right|center_horizontal"
+    android:paddingTop="15sp"
+    android:paddingBottom="15sp"
     android:paddingLeft="10sp"
     android:paddingRight="10sp"
-    android:textSize="20sp"
+    android:textSize="35sp"
+    android:layout_weight="0.65"
+    android:textColor="@color/teal"
 	                    >
+	                    </TextView>
+<TextView 
+    android:layout_width="0dp"
+    android:layout_height="75sp"
+    android:id="@+id/result_unit"
+    android:gravity="left|center_horizontal"
+    android:paddingTop="15sp"
+    android:paddingBottom="15sp"
+    android:paddingLeft="20sp"
+    android:paddingRight="10sp"
+    android:textSize="14sp"
+    android:layout_weight="0.35"
+    android:textColor="@color/richLeather"
+	                    >	                    
+    
 </TextView>
 
 

@@ -1,6 +1,6 @@
 package com.rokzin.converto.ui;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.text.InputType;
@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import com.rokzin.converto.R;
+import com.rokzin.converto.core.ResultItem;
 
 public class CustomView extends RelativeLayout {
 	Context rContext;
@@ -100,12 +101,12 @@ public class CustomView extends RelativeLayout {
 		return rTitle;
 	}
 
-	public void setResults(List<String> results) {
+	public void setResults(ArrayList<ResultItem> results) {
 		rResultsView.setResults(results);
 	}
 
-	public void setSpinnerValues(List<String> unitTypes) {
-		SpinnerAdapter rSpinnerAdapter = new ArrayAdapter<String>(rContext, R.layout.result_item, R.id.result_item, unitTypes);
+	public void setSpinnerValues(String[] unitTypes) {
+		SpinnerAdapter rSpinnerAdapter = new ArrayAdapter<String>(rContext, R.layout.spinner_item, R.id.spinner_value, unitTypes);
 		rSpinner.setAdapter(rSpinnerAdapter);
 	}
 

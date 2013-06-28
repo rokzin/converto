@@ -1,9 +1,5 @@
 package com.rokzin.converto.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,32 +9,34 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.rokzin.converto.units.Angle;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class AngleView extends CustomView{
+public class AngleView extends CustomView {
 
 	Angle rAngle;
-	
+
 	public AngleView(Context context) {
 		super(context);
 		initialize();
 
 	}
-	
+
 	private void initialize() {
 		super.initialize(PreferenceSet.ANGLE);
 
-		/* allowed type parameter values
-		 * 1.  arcminute
-		 * 2.  arcsecond
-		 * 3.  circle
-		 * 4.  degree
-		 * 5.  gon
-		 * 6.  grad
-		 * 7.  mil (nano)
-		 * 8.  mil (soviet union)
-		 * 9.  mil (sweden)
+		/*
+		 * allowed type parameter values
+		 * 1. arcminute
+		 * 2. arcsecond
+		 * 3. circle
+		 * 4. degree
+		 * 5. gon
+		 * 6. grad
+		 * 7. mil (nano)
+		 * 8. mil (soviet union)
+		 * 9. mil (sweden)
 		 * 10. octant
 		 * 11. quadrant
 		 * 12. radian
@@ -46,11 +44,9 @@ public class AngleView extends CustomView{
 		 * 14. sextant
 		 * 15. sign
 		 * 16. turn
-		 * 
-		 * */
+		 */
 
-		List<String> angleTypes = new ArrayList<String>(Arrays.asList(Angle.uVals));
-		setSpinnerValues(angleTypes);
+		setSpinnerValues(ConversionTypes.getAngleTypes());
 
 		rSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -58,7 +54,7 @@ public class AngleView extends CustomView{
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long id) {
 				if (!Formatting.isEmptyOrNull(rInput)) {
 					Integer type = (int) (long) id;
-					Log.d("fdsgsfedgksfdjgfdshg", ""+type);
+					Log.d("fdsgsfedgksfdjgfdshg", "" + type);
 					rAngle = new Angle(type, Double.valueOf(rInput.getText().toString()));
 					setResults(rAngle.getValues());
 				}
@@ -90,5 +86,5 @@ public class AngleView extends CustomView{
 			}
 		});
 	}
-	
+
 }
