@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="twitterBlue">#0099cc</color>
+    <color name="HoloBlue">#0099cc</color>
     <color name="teal">#527578</color>
     <color name="richLeather">#ADA692</color>
     </resources>

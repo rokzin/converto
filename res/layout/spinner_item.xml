@@ -6,12 +6,13 @@
 
 
 <TextView 
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="60sp"
     android:id="@+id/spinner_value"
     android:gravity="center_vertical|center_horizontal"
+    android:layout_gravity="center_vertical|center_horizontal"
     android:textSize="20sp"
-    android:textColor="@color/teal"
+    android:textColor="@color/richLeather"
 	                    >
 </TextView>
 </LinearLayout>

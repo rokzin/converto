@@ -2,21 +2,28 @@ package com.rokzin.converto.ui;
 
 import java.util.ArrayList;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
 import com.rokzin.converto.R;
 import com.rokzin.converto.core.ResultItem;
 
-public class CustomView extends RelativeLayout {
+public class CustomView extends RelativeLayout implements OnItemClickListener {
 	Context rContext;
 	private String rTitle;
 
@@ -57,10 +64,10 @@ public class CustomView extends RelativeLayout {
 
 	public void loadPotraitView() {
 		removeAllViews();
-		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 1 / 3, 100);
+		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 2 / 5, 120);
 		relativeParams.addRule(RelativeLayout.RIGHT_OF, rInput.getId());
 
-		RelativeLayout.LayoutParams relativeParams2 = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 2 / 3, 100);
+		RelativeLayout.LayoutParams relativeParams2 = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 3 / 5, 120);
 		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
@@ -76,13 +83,17 @@ public class CustomView extends RelativeLayout {
 
 		rTitle = title;
 		rInput = new EditText(rContext);
+		rInput.setGravity(Gravity.RIGHT);
+		rInput.setTextSize(35);
 		rInput.setHint("Enter a number");
 		rInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		rInput.setId(1);
 		rSpinner = new Spinner(rContext);
 		rSpinner.setId(2);
+		rSpinner.setPadding(0, 20, 5, 10);
 		rResultsView = new ResultsView(rContext);
 		rResultsView.setId(3);
+		rResultsView.setOnItemClickListener(this);
 		rInput.setText("1");
 
 		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
@@ -108,6 +119,17 @@ public class CustomView extends RelativeLayout {
 	public void setSpinnerValues(String[] unitTypes) {
 		SpinnerAdapter rSpinnerAdapter = new ArrayAdapter<String>(rContext, R.layout.spinner_item, R.id.spinner_value, unitTypes);
 		rSpinner.setAdapter(rSpinnerAdapter);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> aView, View v, int i, long id) {
+		double value = ((ResultItem)aView.getItemAtPosition(i)).getValue();
+
+		ClipboardManager clipboard = (ClipboardManager)
+		        rContext.getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clip = ClipData.newPlainText("ConverTo",String.valueOf(value));
+		clipboard.setPrimaryClip(clip);
+		Toast.makeText(rContext,String.valueOf(value) + " copied to clipboard." , Toast.LENGTH_LONG).show();		
 	}
 
 }

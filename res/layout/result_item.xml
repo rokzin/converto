@@ -18,7 +18,7 @@
     android:paddingLeft="10sp"
     android:paddingRight="10sp"
     android:textSize="35sp"
-    android:layout_weight="0.65"
+    android:layout_weight="0.60"
     android:textColor="@color/teal"
 	                    >
 	                    </TextView>
@@ -31,8 +31,8 @@
     android:paddingBottom="15sp"
     android:paddingLeft="20sp"
     android:paddingRight="10sp"
-    android:textSize="14sp"
-    android:layout_weight="0.35"
+    android:textSize="20sp"
+    android:layout_weight="0.40"
     android:textColor="@color/richLeather"
 	                    >	                    
     
