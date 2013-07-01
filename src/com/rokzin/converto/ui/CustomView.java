@@ -2,9 +2,11 @@ package com.rokzin.converto.ui;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -23,7 +26,7 @@ import android.widget.Toast;
 import com.rokzin.converto.R;
 import com.rokzin.converto.core.ResultItem;
 
-public class CustomView extends RelativeLayout implements OnItemClickListener {
+public class CustomView extends RelativeLayout implements OnItemClickListener, OnItemLongClickListener{
 	Context rContext;
 	private String rTitle;
 
@@ -94,6 +97,7 @@ public class CustomView extends RelativeLayout implements OnItemClickListener {
 		rResultsView = new ResultsView(rContext);
 		rResultsView.setId(3);
 		rResultsView.setOnItemClickListener(this);
+		rResultsView.setOnItemLongClickListener(this);
 		rInput.setText("1");
 
 		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
@@ -130,6 +134,33 @@ public class CustomView extends RelativeLayout implements OnItemClickListener {
 		ClipData clip = ClipData.newPlainText("ConverTo",String.valueOf(value));
 		clipboard.setPrimaryClip(clip);
 		Toast.makeText(rContext,String.valueOf(value) + " copied to clipboard." , Toast.LENGTH_LONG).show();		
+	}
+
+	@Override
+	public boolean onItemLongClick(AdapterView<?> aView, View v, int i,
+			long id) {
+		double value = ((ResultItem)aView.getItemAtPosition(i)).getValue();
+		String type = ((ResultItem)aView.getItemAtPosition(i)).getUnitType();
+		final String clipBoardText = String.valueOf(value)+" "+type; 
+		CharSequence options[] = new CharSequence[] {"Copy value with Unit"};
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(rContext);
+		builder.setItems(options, new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        if(which==0){
+		        	
+
+		    		ClipboardManager clipboard = (ClipboardManager)
+		    		        rContext.getSystemService(Context.CLIPBOARD_SERVICE);
+		    		ClipData clip = ClipData.newPlainText("ConverTo",String.valueOf(clipBoardText));
+		    		clipboard.setPrimaryClip(clip);
+		    		Toast.makeText(rContext,clipBoardText + " copied to clipboard." , Toast.LENGTH_LONG).show();	
+		        }
+		    }
+		});
+		builder.show();
+		return false;
 	}
 
 }
