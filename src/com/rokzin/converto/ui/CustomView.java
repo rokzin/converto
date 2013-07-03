@@ -141,8 +141,10 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 			long id) {
 		double value = ((ResultItem)aView.getItemAtPosition(i)).getValue();
 		String type = ((ResultItem)aView.getItemAtPosition(i)).getUnitType();
-		final String clipBoardText = String.valueOf(value)+" "+type; 
-		CharSequence options[] = new CharSequence[] {"Copy value with Unit"};
+		final String valueWithUnit = String.valueOf(value)+" "+type; 
+		final String fullyQualifiedConversion = rInput.getText().toString()+" "+rSpinner.getSelectedItem().toString()+" = "+String.valueOf(value)+" "+type; 
+
+		CharSequence options[] = new CharSequence[] {"Copy value with Unit","Copy fully qualified conversion"};
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(rContext);
 		builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -153,9 +155,18 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 
 		    		ClipboardManager clipboard = (ClipboardManager)
 		    		        rContext.getSystemService(Context.CLIPBOARD_SERVICE);
-		    		ClipData clip = ClipData.newPlainText("ConverTo",String.valueOf(clipBoardText));
+		    		ClipData clip = ClipData.newPlainText("ConverTo",valueWithUnit);
 		    		clipboard.setPrimaryClip(clip);
-		    		Toast.makeText(rContext,clipBoardText + " copied to clipboard." , Toast.LENGTH_LONG).show();	
+		    		Toast.makeText(rContext,valueWithUnit + " copied to clipboard." , Toast.LENGTH_LONG).show();	
+		        }
+		        if(which==1){
+		        	
+
+		    		ClipboardManager clipboard = (ClipboardManager)
+		    		        rContext.getSystemService(Context.CLIPBOARD_SERVICE);
+		    		ClipData clip = ClipData.newPlainText("ConverTo",fullyQualifiedConversion);
+		    		clipboard.setPrimaryClip(clip);
+		    		Toast.makeText(rContext,fullyQualifiedConversion + " copied to clipboard." , Toast.LENGTH_LONG).show();	
 		        }
 		    }
 		});

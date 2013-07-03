@@ -38,6 +38,11 @@ public class Formatting {
 	public static Double roundOff(double value) {
 		return Double.valueOf(decimalFormat.format(value));
 	}
+	
+	public static String roundOff(String valueAsString) {
+		Double value = Double.valueOf(valueAsString);
+		return decimalFormat.format(value);
+	}
 
 	public static boolean isEmptyOrNull(EditText editText) {
 		// sanity check

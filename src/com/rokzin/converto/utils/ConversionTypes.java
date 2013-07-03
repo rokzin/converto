@@ -1,6 +1,5 @@
 package com.rokzin.converto.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConversionTypes {
@@ -44,14 +43,9 @@ public class ConversionTypes {
 		return angleTypes;
 	}
 
-	public static List<String> getCurrencyTypes() {
+	public static String[] getCurrencyTypes() {
 
-		currencyTypes = new ArrayList<String>();
-		currencyTypes.add("USD");
-		currencyTypes.add("EUR");
-		currencyTypes.add("GBP");
-		currencyTypes.add("CNY");
-		currencyTypes.add("INR");
+		String currencyTypes[] = {"AUD","ALL","DZD","ARS","ALL","XAL","AWG","GBP","BSD","BHD","BDT","BBD","BYR","BZD","BMD","BTN","BOB","BWP","BRL","BND","BGN","BIF","CAD","CNY","KHR","CVE","KYD","XOF","XAF","CLP","COP","KMF","XCP","CRC","HRK","CUP","CZK","EUR","DKK","DJF","DOP","XCD","ECS","EGP","SVC","ERN","EEK","ETB","FKP","FJD","HKD","IDR","INR","GMD","GHC","GIP","XAU","GTQ","GNF","GYD","HTG","HNL","HUF","ISK","IRR","IQD","ILS","JPY","JMD","JPD","KZT","KES","KWD","LAK","LVL","LBP","LSL","LRD","LYD","LTL","MOP","MKD","MWK","MYR","MVR","MTL","MRO","MUR","MXN","MDL","MNT","MAD","MMK","NAD","NPR","ANG","NZD","NIO","NGN","KPW","NOK","OMR","XPF","PKR","XPD","PAB","PGK","PYG","PEN","PHP","XPT","PLN","QAR","RON","RUB","RWF","CHF","KRW","WST","STD","SAR","SCR","SLL","XAG","SGD","SKK","SIT","SBD","SOS","ZAR","LKR","SHP","SDG","SEK","SZL","SYP","USD","THB","TRY","TWD","TZS","TOP","TTD","TND","AED","UGX","UAH","UYU","VUV","VEF","VND","YER","ZMK","ZWD"};
 
 		return currencyTypes;
 

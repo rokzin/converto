@@ -7,71 +7,46 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.rokzin.converto.utils.ConversionTypes;
+import com.rokzin.converto.core.ResultItem;
 
 public class Currency {
 
-	private List<String> results = new ArrayList<String>();
-	private List<Double> resultValues = new ArrayList<Double>();
+	private ArrayList<ResultItem> results = new ArrayList<ResultItem>();
+	private String rConvertTo;
+	private String rConvertFrom;
 
-	public Currency(String convertFrom, double value) {
-		getdata(convertFrom, value);
-		addTypeToValue();
+	public Currency(String convertFrom, String ConvertTo, double value) {
+		rConvertFrom = convertFrom;
+		rConvertTo = ConvertTo;
+	
+		getdata(value);
+		
+	
 	}
 
-	private void addTypeToValue() {
-		for (int i = 0; i < resultValues.size(); i++) {
-			if (i == 0)
-				results.add(resultValues.get(i) + " USD");
-			if (i == 1)
-				results.add(resultValues.get(i) + " EUR");
-			if (i == 2)
-				results.add(resultValues.get(i) + " GBP");
-			if (i == 3)
-				results.add(resultValues.get(i) + " CNY");
-			if (i == 4)
-				results.add(resultValues.get(i) + " INR");
 
-		}
-
-	}
-
-	public List<String> getResults() {
+	public ArrayList<ResultItem> getResults() {
 		return results;
 	}
 
-	private String buildURL(String convertFrom) {
+	private String buildURL() {
 
-		String conversions = "";
-		boolean doOnce = true;
-		for (String convertto : ConversionTypes.getCurrencyTypes()) {
-			if (doOnce) {
-				conversions = conversions + convertFrom + convertto + "=X";
-
-			}
-			else {
-				conversions = conversions + "," + convertFrom + convertto + "=X";
-			}
-			doOnce = false;
-		}
-
-		String source = "http://finance.yahoo.com/d/quotes.csv?e=.csv&f=c4l1&s=" + conversions;
+		String source = "http://finance.yahoo.com/d/quotes.csv?e=.csv&f=c4l1&s=" + rConvertFrom+rConvertTo+"=X";
 
 		return source;
 
 	}
 
-	public void getdata(String convertFrom, double value) {
+	public void getdata(double value) {
 
 		try {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
-			URL url = new URL(buildURL(convertFrom));
+			URL url = new URL(buildURL());
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			readStream(con.getInputStream(), value);
 
@@ -89,9 +64,13 @@ public class Currency {
 			while ((line = reader.readLine()) != null) {
 				String splitLine[] = line.split(",");
 				splitLine[1] = splitLine[1].replace("\"", "");
-				resultValues.add(Double.valueOf(splitLine[1]) * value);
+				ResultItem ri = new ResultItem();
+				ri.setValue(Double.valueOf(splitLine[1])*value);
+				ri.setUnitType(rConvertTo);
+				results.add(ri);
 				Log.d("debuggin", line);
 			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

@@ -24,6 +24,7 @@ import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
 import com.rokzin.converto.ui.AngleView;
 import com.rokzin.converto.ui.AreaView;
+import com.rokzin.converto.ui.CurrencyView;
 import com.rokzin.converto.ui.CustomView;
 import com.rokzin.converto.ui.LengthView;
 import com.rokzin.converto.ui.MassView;
@@ -44,7 +45,7 @@ public class ConvertoActivity extends Activity {
 	private LengthView lengthView;
 	private VolumeView volumeView;
 	private AreaView areaView;
-	// private CurrencyView currencyView;
+	private CurrencyView currencyView;
 	private MassView massView;
 	private TemperatureView temperatureView;
 	private AngleView angleView;
@@ -91,7 +92,7 @@ public class ConvertoActivity extends Activity {
 		lengthView = new LengthView(ConvertoActivity.this);
 		volumeView = new VolumeView(ConvertoActivity.this);
 		areaView = new AreaView(ConvertoActivity.this);
-		// currencyView = new CurrencyView(ConvertoActivity.this);
+		currencyView = new CurrencyView(ConvertoActivity.this);
 		angleView = new AngleView(ConvertoActivity.this);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
@@ -120,10 +121,10 @@ public class ConvertoActivity extends Activity {
 					checkOrientationAndLoadView(0, areaView);
 
 				}
-				// if (selected_item == PreferenceSet.CURRENCY) {
-				// checkOrientationAndLoadView(0, currencyView);
-				//
-				// }
+				 if (selected_item == PreferenceSet.CURRENCY) {
+				 checkOrientationAndLoadView(0, currencyView);
+				
+				 }
 				if (selected_item == PreferenceSet.ANGLE) {
 					checkOrientationAndLoadView(0, angleView);
 				}
@@ -188,14 +189,16 @@ public class ConvertoActivity extends Activity {
 
 		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
-			((CustomView) currentView).loadPotraitView();
+			
 			if (currentView instanceof ICustomView) {
+				((CustomView) currentView).loadPotraitView();
 				((ICustomView) currentView).reinitialize();
 			}
 		}
 		else {
-			((CustomView) currentView).loadLandscapeView();
+			
 			if (currentView instanceof ICustomView) {
+				((CustomView) currentView).loadLandscapeView();
 				((ICustomView) currentView).reinitialize();
 			}
 		}
