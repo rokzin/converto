@@ -1,20 +1,32 @@
 package com.rokzin.converto.ui;
 
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.rokzin.converto.core.CurrencyRates;
 import com.rokzin.converto.units.Currency;
 import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
@@ -24,18 +36,16 @@ public class CurrencyView extends RelativeLayout{
 	
 	LinearLayout box1;
 	LinearLayout box2;
+	RelativeLayout box3;
 
 	private Context rContext;
 	private EditText rInput1;
 	private EditText rInput2;
-	private Currency rCurrency;
 	private TextView rType1;
 	private TextView rType2;
 	private CustomTextWatcher rTextListener = new CustomTextWatcher();
-	
-
-	
 	private TextView rEqualSign;
+	private TextView lastRefreshed;
 	
 
 	private class CustomOnclickListener implements OnClickListener{
@@ -120,7 +130,40 @@ public class CurrencyView extends RelativeLayout{
 	public CurrencyView(Context context) {
 		super(context);
 		rContext = context;
+		
 		initialize();
+	}
+
+	private void getRates() {
+		
+		ProgressDialog pd = new ProgressDialog(rContext);
+		pd.setTitle("Processing");
+		pd.setMessage("Getting real time currency rates");
+		pd.setCancelable(false);
+		
+		ExecutorService executor = Executors.newFixedThreadPool(1);
+
+		FutureTask<String> future = new FutureTask<String>(
+                new Callable<String>()
+                {
+
+					@Override
+					public java.lang.String call() throws Exception {
+						new CurrencyRates();
+						
+						return "";
+					}
+                   
+                });
+		
+        executor.execute(future);
+        while (!future.isDone()) {
+			pd.show();
+		}
+        pd.dismiss();
+        
+        Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
+		
 	}
 
 	public CurrencyView(Context context, AttributeSet attrs, int theme) {
@@ -134,6 +177,9 @@ public class CurrencyView extends RelativeLayout{
 	}
 
 	private void initialize() {
+		
+		
+		
 		
 		box1 = new LinearLayout(rContext);
 		box1.setOrientation(LinearLayout.VERTICAL);
@@ -190,6 +236,42 @@ public class CurrencyView extends RelativeLayout{
 		box2.addView(rType2,rSpinner2LP);
 		
 	
+		
+		box3 = new RelativeLayout(rContext);
+		box3.setBackgroundColor(Color.parseColor("#0099cc"));
+		box3.setPadding(15, 5, 10, 5);
+		box3.setGravity(Gravity.CENTER_VERTICAL);
+		
+		lastRefreshed = new TextView(rContext);
+		lastRefreshed.setText("Not refreshed");
+		lastRefreshed.setTextColor(Color.WHITE);
+		
+		lastRefreshed.setTextSize(12);
+		
+		RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 60);
+		rLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		
+		Button refresh = new Button(rContext);
+		refresh.setBackgroundColor(Color.WHITE);
+		refresh.setText("Get Rates");
+		refresh.setHeight(80);
+		refresh.setTextSize(12);
+		refresh.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				getRates();
+				refreshDate();
+				
+			}
+
+		});
+		
+
+		
+		box3.addView(lastRefreshed);
+		box3.addView(refresh,rLP);
+		
 		RelativeLayout.LayoutParams box1LP = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels - 20, 240);
 		box1LP.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		box1LP.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -198,19 +280,30 @@ public class CurrencyView extends RelativeLayout{
 		box2LP.addRule(RelativeLayout.BELOW,rEqualSign.getId());
 		box2LP.addRule(RelativeLayout.CENTER_HORIZONTAL);
 		
+		RelativeLayout.LayoutParams box3LP = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels, 90);
+		box3LP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		box3LP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		
 		this.addView(box1,box1LP);
 		this.addView(rEqualSign,rEqLP);
 		this.addView(box2,box2LP);
+		this.addView(box3,box3LP);
+		
+		
 
 	}
 	
+	private void refreshDate() {
+		lastRefreshed.setText("Last Refreshed : " + new Date().toString());
+		
+	}
 	private TextView getCustomTextView() {
 		
 		TextView tv = new TextView(rContext);
 		tv.setBackgroundColor(Color.parseColor("#63879F"));
 		tv.setOnClickListener(new CustomOnclickListener());
 		tv.setGravity(Gravity.CENTER);
-		tv.setText(ConversionTypes.getCurrencyTypes()[136]);
+		tv.setText(ConversionTypes.getCurrencyTypes()[133]);
 		tv.setTextColor(Color.WHITE);
 		tv.setTextSize(16);
 		return tv;
@@ -230,22 +323,51 @@ public class CurrencyView extends RelativeLayout{
 
 	private void convert(int i) {
 		
-		if(i == 0 ){
-			rCurrency = new Currency(rType1.getText().toString(),rType2.getText().toString(), Double.parseDouble(rInput1.getText().toString()));
-			rInput2.removeTextChangedListener(rTextListener);
-			rInput2.setText(String.valueOf(Formatting.roundOff(rCurrency.getResults().get(0).getValue())));
-			rInput2.addTextChangedListener(rTextListener);
+		if(isOnline()){
+		
+			if(i == 0 ){
+				Currency c = new Currency(getLocation(rType1), getLocation(rType2), Double.valueOf(rInput1.getText().toString()));
+				
+				rInput2.removeTextChangedListener(rTextListener);
+				rInput2.setText(c.getResult());
+				rInput2.addTextChangedListener(rTextListener);
+			}
+			
+			if(i == 1 ){
+				Currency c = new Currency(getLocation(rType2), getLocation(rType1), Double.valueOf(rInput2.getText().toString()));
+				rInput1.removeTextChangedListener(rTextListener);
+				rInput1.setText(c.getResult());
+				rInput1.addTextChangedListener(rTextListener);
+			}
+		
+		}
+		else{
+			Toast.makeText(rContext, "No Internet connection.", Toast.LENGTH_SHORT).show();
 		}
 		
-		if(i == 1 ){
-			rCurrency = new Currency(rType2.getText().toString(),rType1.getText().toString(), Double.parseDouble(rInput2.getText().toString()));
-			rInput1.removeTextChangedListener(rTextListener);
-			rInput1.setText(String.valueOf(Formatting.roundOff(rCurrency.getResults().get(0).getValue())));
-			rInput1.addTextChangedListener(rTextListener);
+			
+		
+		
+	}
+
+	
+	private int getLocation(TextView tv) {
+		for (int i = 0; i < ConversionTypes.getCurrencyTypes().length; i++) {
+			if(tv.getText().toString().equals(ConversionTypes.getCurrencyTypes()[i])){
+				return i;
+			}
 		}
-		
-		
-		
+		return 0;
+	}
+
+	public boolean isOnline() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) rContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
 	}
 	
 	

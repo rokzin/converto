@@ -1,9 +1,7 @@
 package com.rokzin.converto.utils;
 
-import java.util.List;
 
 public class ConversionTypes {
-	public static List<String> currencyTypes;
 
 	public static String[] getAngleTypes() {
 
@@ -45,9 +43,10 @@ public class ConversionTypes {
 
 	public static String[] getCurrencyTypes() {
 
-		String currencyTypes[] = {"AUD","ALL","DZD","ARS","ALL","XAL","AWG","GBP","BSD","BHD","BDT","BBD","BYR","BZD","BMD","BTN","BOB","BWP","BRL","BND","BGN","BIF","CAD","CNY","KHR","CVE","KYD","XOF","XAF","CLP","COP","KMF","XCP","CRC","HRK","CUP","CZK","EUR","DKK","DJF","DOP","XCD","ECS","EGP","SVC","ERN","EEK","ETB","FKP","FJD","HKD","IDR","INR","GMD","GHC","GIP","XAU","GTQ","GNF","GYD","HTG","HNL","HUF","ISK","IRR","IQD","ILS","JPY","JMD","JPD","KZT","KES","KWD","LAK","LVL","LBP","LSL","LRD","LYD","LTL","MOP","MKD","MWK","MYR","MVR","MTL","MRO","MUR","MXN","MDL","MNT","MAD","MMK","NAD","NPR","ANG","NZD","NIO","NGN","KPW","NOK","OMR","XPF","PKR","XPD","PAB","PGK","PYG","PEN","PHP","XPT","PLN","QAR","RON","RUB","RWF","CHF","KRW","WST","STD","SAR","SCR","SLL","XAG","SGD","SKK","SIT","SBD","SOS","ZAR","LKR","SHP","SDG","SEK","SZL","SYP","USD","THB","TRY","TWD","TZS","TOP","TTD","TND","AED","UGX","UAH","UYU","VUV","VEF","VND","YER","ZMK","ZWD"};
-
+		String currencyTypes[] = {"AED","ALL","ANG","ARS","AUD","AWG","BBD","BDT","BGN","BHD","BIF","BMD","BND","BOB","BRL","BSD","BTN","BWP","BYR","BZD","CAD","CHF","CLP","CNY","COP","CRC","CUP","CVE","CZK","DJF","DKK","DOP","DZD","ECS","EEK","EGP","ERN","ETB","EUR","FJD","FKP","GBP","GHC","GIP","GMD","GNF","GTQ","GYD","HKD","HNL","HRK","HTG","HUF","IDR","ILS","INR","IQD","IRR","ISK","JMD","JPD","JPY","KES","KHR","KMF","KPW","KRW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LTL","LVL","LYD","MAD","MDL","MKD","MMK","MNT","MOP","MRO","MTL","MUR","MVR","MWK","MXN","MYR","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SIT","SKK","SLL","SOS","STD","SVC","SYP","SZL","THB","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX","USD","UYU","VEF","VND","VUV","WST","XAF","XAG","XAL","XAU","XCD","XCP","XOF","XPD","XPF","XPT","YER","ZAR","ZMK","ZWD"};
 		return currencyTypes;
 
 	}
+	
+	
 }
