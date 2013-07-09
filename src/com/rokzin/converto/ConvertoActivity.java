@@ -1,5 +1,7 @@
 package com.rokzin.converto;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +24,7 @@ import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
+import com.rokzin.converto.storage.SaveForLater;
 import com.rokzin.converto.ui.AngleView;
 import com.rokzin.converto.ui.AreaView;
 import com.rokzin.converto.ui.CurrencyView;
@@ -53,6 +56,9 @@ public class ConvertoActivity extends Activity {
 	public static int APP_WIDTH;
 	public SharedPreferences rPreferences;
 	private OnSharedPreferenceChangeListener rPreferenceListener;
+	private SaveForLater saveForLaterView;
+	
+	public static File file;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,8 @@ public class ConvertoActivity extends Activity {
 	}
 
 	private void initialize() {
+		
+		createStorageFile();
 		// setting the roundoff on load
 		Formatting.setRoundOff(Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceSet.PREF_ROUND_OFF, "2")));
 
@@ -94,6 +102,7 @@ public class ConvertoActivity extends Activity {
 		areaView = new AreaView(ConvertoActivity.this);
 		currencyView = new CurrencyView(ConvertoActivity.this);
 		angleView = new AngleView(ConvertoActivity.this);
+		saveForLaterView = new SaveForLater(ConvertoActivity.this);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
 		menu_items.setOnItemClickListener(new OnItemClickListener() {
@@ -128,6 +137,9 @@ public class ConvertoActivity extends Activity {
 				if (selected_item == PreferenceSet.ANGLE) {
 					checkOrientationAndLoadView(0, angleView);
 				}
+				if (selected_item == PreferenceSet.SAVEFORLATER) {
+					checkOrientationAndLoadView(0, saveForLaterView);
+				}
 
 			}
 
@@ -135,6 +147,13 @@ public class ConvertoActivity extends Activity {
 
 		viewSwitcher.addView(angleView);
 
+	}
+
+	private void createStorageFile() {
+		File rDir = new File("/sdcard/converto/");
+		
+		rDir.mkdirs();
+		file = new File(rDir, "ConverTo.txt");
 	}
 
 	@Override

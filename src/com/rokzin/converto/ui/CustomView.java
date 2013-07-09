@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.rokzin.converto.R;
 import com.rokzin.converto.core.ResultItem;
+import com.rokzin.converto.storage.Store;
 
 public class CustomView extends RelativeLayout implements OnItemClickListener, OnItemLongClickListener{
 	Context rContext;
@@ -144,7 +145,7 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		final String valueWithUnit = String.valueOf(value)+" "+type; 
 		final String fullyQualifiedConversion = rInput.getText().toString()+" "+rSpinner.getSelectedItem().toString()+" = "+String.valueOf(value)+" "+type; 
 
-		CharSequence options[] = new CharSequence[] {"Copy value with Unit","Copy fully qualified conversion"};
+		CharSequence options[] = new CharSequence[] {"Copy value with Unit","Copy fully qualified conversion","Save for later"};
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(rContext);
 		builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -167,6 +168,10 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		    		ClipData clip = ClipData.newPlainText("ConverTo",fullyQualifiedConversion);
 		    		clipboard.setPrimaryClip(clip);
 		    		Toast.makeText(rContext,fullyQualifiedConversion + " copied to clipboard." , Toast.LENGTH_LONG).show();	
+		        }
+		        if(which==2){
+		        	new Store(fullyQualifiedConversion, rContext);
+		        	//SaveForLater.reInitialize();
 		        }
 		    }
 		});

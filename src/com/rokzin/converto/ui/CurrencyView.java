@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.rokzin.converto.core.CurrencyRates;
 import com.rokzin.converto.units.Currency;
 import com.rokzin.converto.utils.ConversionTypes;
+import com.rokzin.converto.utils.CustomObject;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
@@ -197,12 +198,12 @@ public class CurrencyView extends RelativeLayout{
 		rType2 = getCustomTextView();
 		rType2.setId(1);
 		
-		RelativeLayout.LayoutParams rInputLP = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, 120);
-		rInputLP.addRule(RelativeLayout.CENTER_IN_PARENT);
+		
+		
+		RelativeLayout.LayoutParams rInputLP = CustomObject.getCustomParams(LayoutParams.MATCH_PARENT, 120,new int[]{RelativeLayout.CENTER_IN_PARENT});
 		box1.addView(rInput1, rInputLP);
 		
-		RelativeLayout.LayoutParams rSpinnerLP = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, 120);
-		rSpinnerLP.addRule(RelativeLayout.CENTER_IN_PARENT);
+		RelativeLayout.LayoutParams rSpinnerLP = CustomObject.getCustomParams(LayoutParams.MATCH_PARENT, 120, new int[]{RelativeLayout.CENTER_IN_PARENT});
 		rSpinnerLP.addRule(RelativeLayout.BELOW, rInput1.getId());
 		box1.addView(rType1,rSpinnerLP);
 		
@@ -214,9 +215,7 @@ public class CurrencyView extends RelativeLayout{
 		rEqualSign.setId(11);
 		rEqualSign.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.CENTER_VERTICAL);
 				
-		RelativeLayout.LayoutParams rEqLP = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, 100
-				);
-		rEqLP.addRule(RelativeLayout.CENTER_IN_PARENT);
+		RelativeLayout.LayoutParams rEqLP = CustomObject.getCustomParams(LayoutParams.MATCH_PARENT, 100, new int[]{RelativeLayout.CENTER_IN_PARENT});
 		rEqLP.addRule(RelativeLayout.BELOW, box1.getId());
 		
 		
@@ -226,12 +225,10 @@ public class CurrencyView extends RelativeLayout{
 		box2.setOrientation(LinearLayout.VERTICAL);
 		
 
-		RelativeLayout.LayoutParams rInput2LP = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, 120);
-		rInput2LP.addRule(RelativeLayout.CENTER_IN_PARENT);
+		RelativeLayout.LayoutParams rInput2LP = CustomObject.getCustomParams(LayoutParams.MATCH_PARENT, 120, new int[]{RelativeLayout.CENTER_IN_PARENT});
 		box2.addView(rInput2, rInput2LP);
 		
-		RelativeLayout.LayoutParams rSpinner2LP = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, 120);
-		rSpinner2LP.addRule(RelativeLayout.CENTER_IN_PARENT);
+		RelativeLayout.LayoutParams rSpinner2LP = CustomObject.getCustomParams(LayoutParams.MATCH_PARENT, 120, new int[]{RelativeLayout.CENTER_IN_PARENT});
 		rSpinner2LP.addRule(RelativeLayout.BELOW, rInput2.getId());
 		box2.addView(rType2,rSpinner2LP);
 		
@@ -248,8 +245,7 @@ public class CurrencyView extends RelativeLayout{
 		
 		lastRefreshed.setTextSize(12);
 		
-		RelativeLayout.LayoutParams rLP = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 60);
-		rLP.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		RelativeLayout.LayoutParams rLP = CustomObject.getCustomParams(LayoutParams.WRAP_CONTENT, 60, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT});
 		
 		Button refresh = new Button(rContext);
 		refresh.setBackgroundColor(Color.WHITE);
@@ -272,17 +268,13 @@ public class CurrencyView extends RelativeLayout{
 		box3.addView(lastRefreshed);
 		box3.addView(refresh,rLP);
 		
-		RelativeLayout.LayoutParams box1LP = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels - 20, 240);
-		box1LP.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		box1LP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		RelativeLayout.LayoutParams box1LP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels - 20, 240, new int[]{RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.CENTER_HORIZONTAL});
+
 		
-		RelativeLayout.LayoutParams box2LP = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels - 20, 240);
+		RelativeLayout.LayoutParams box2LP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels - 20, 240, new int[]{RelativeLayout.CENTER_HORIZONTAL});
 		box2LP.addRule(RelativeLayout.BELOW,rEqualSign.getId());
-		box2LP.addRule(RelativeLayout.CENTER_HORIZONTAL);
 		
-		RelativeLayout.LayoutParams box3LP = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels, 90);
-		box3LP.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		box3LP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		RelativeLayout.LayoutParams box3LP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, 90, new int[]{RelativeLayout.CENTER_HORIZONTAL,RelativeLayout.ALIGN_PARENT_BOTTOM});
 		
 		this.addView(box1,box1LP);
 		this.addView(rEqualSign,rEqLP);
@@ -293,6 +285,8 @@ public class CurrencyView extends RelativeLayout{
 
 	}
 	
+
+
 	private void refreshDate() {
 		lastRefreshed.setText("Last Refreshed : " + new Date().toString());
 		
@@ -344,10 +338,7 @@ public class CurrencyView extends RelativeLayout{
 		else{
 			Toast.makeText(rContext, "No Internet connection.", Toast.LENGTH_SHORT).show();
 		}
-		
-			
-		
-		
+	
 	}
 
 	
