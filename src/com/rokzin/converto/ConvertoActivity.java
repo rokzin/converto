@@ -1,6 +1,11 @@
 package com.rokzin.converto;
 
 import java.io.File;
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,11 +25,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
-import com.rokzin.converto.storage.SaveForLater;
+import com.rokzin.converto.currency.Currency;
+import com.rokzin.converto.storage.StoreView;
 import com.rokzin.converto.ui.AngleView;
 import com.rokzin.converto.ui.AreaView;
 import com.rokzin.converto.ui.CurrencyView;
@@ -56,15 +63,15 @@ public class ConvertoActivity extends Activity {
 	public static int APP_WIDTH;
 	public SharedPreferences rPreferences;
 	private OnSharedPreferenceChangeListener rPreferenceListener;
-	private SaveForLater saveForLaterView;
-	
+	private StoreView saveForLaterView;
+	private Context rContext;
 	public static File file;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_converto);
-
+		rContext = getApplicationContext();
 		mSlideHolder = (SlideHolder) findViewById(R.id.slideHolder);
 		rPreferences = PreferenceManager.getDefaultSharedPreferences(ConvertoActivity.this);
 
@@ -74,7 +81,7 @@ public class ConvertoActivity extends Activity {
 
 	private void initialize() {
 		
-		createStorageFile();
+;
 		// setting the roundoff on load
 		Formatting.setRoundOff(Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceSet.PREF_ROUND_OFF, "2")));
 
@@ -95,15 +102,15 @@ public class ConvertoActivity extends Activity {
 		rPreferences.registerOnSharedPreferenceChangeListener(rPreferenceListener);
 		menu_items = (ListView) findViewById(R.id.menu_list);
 		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
-		massView = new MassView(ConvertoActivity.this);
-		temperatureView = new TemperatureView(ConvertoActivity.this);
-		lengthView = new LengthView(ConvertoActivity.this);
-		volumeView = new VolumeView(ConvertoActivity.this);
-		areaView = new AreaView(ConvertoActivity.this);
-		currencyView = new CurrencyView(ConvertoActivity.this);
-		angleView = new AngleView(ConvertoActivity.this);
-		saveForLaterView = new SaveForLater(ConvertoActivity.this);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(ConvertoActivity.this, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
+		massView = new MassView(rContext);
+		temperatureView = new TemperatureView(rContext);
+		lengthView = new LengthView(rContext);
+		volumeView = new VolumeView(rContext);
+		areaView = new AreaView(rContext);
+		currencyView = new CurrencyView(rContext);
+		angleView = new AngleView(rContext);
+		saveForLaterView = new StoreView(rContext);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(rContext, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
 		menu_items.setAdapter(adapter);
 		menu_items.setOnItemClickListener(new OnItemClickListener() {
 
@@ -144,8 +151,9 @@ public class ConvertoActivity extends Activity {
 			}
 
 		});
-
+		
 		viewSwitcher.addView(angleView);
+		createStorageFile();
 
 	}
 
@@ -154,8 +162,19 @@ public class ConvertoActivity extends Activity {
 		
 		rDir.mkdirs();
 		file = new File(rDir, "ConverTo.txt");
+		saveForLaterView.refresh();
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	//TODO
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	//TODO
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem item_type = menu.add("Type");
@@ -177,7 +196,7 @@ public class ConvertoActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item == menu.getItem(1)) {
-			Intent i = new Intent(this, SettingsActivity.class);
+			Intent i = new Intent(rContext, SettingsActivity.class);
 			startActivityForResult(i, 1);
 		}
 
@@ -202,10 +221,11 @@ public class ConvertoActivity extends Activity {
 			mSlideHolder.toggle();
 		}
 
+		
 		viewSwitcher.removeAllViews(); // clear any previous views
 		menu.getItem(0).setTitle(currentView.toString());// set title
 		viewSwitcher.addView(currentView);
-
+		
 		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			
@@ -221,7 +241,59 @@ public class ConvertoActivity extends Activity {
 				((ICustomView) currentView).reinitialize();
 			}
 		}
+		
+		
+		if(currentView instanceof CurrencyView && shouldBeRefreshed()){
+			
+			getCurrencyRates();
+			
+		}
 
+	}
+
+	
+	private boolean shouldBeRefreshed() {
+		Date now = new Date();
+		Date lr = new Date(rPreferences.getLong("LastRefreshed", 0));
+
+		
+		if(now.after(lr)){
+
+			if(now.getDay() == lr.getDay() && (now.getHours() - lr.getHours()<2)){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void getCurrencyRates() {
+
+		ExecutorService executor = Executors.newFixedThreadPool(1);
+
+		FutureTask<String> future = new FutureTask<String>(
+                new Callable<String>()
+                {
+
+					@Override
+					public java.lang.String call() throws Exception {
+						Currency.getRates();
+						
+						return "";
+					}
+                   
+                });
+		
+        executor.execute(future);
+ 
+        //saving the last refreshed date to shared preferences
+        Date date = new Date(System.currentTimeMillis());
+        SharedPreferences.Editor prefEditor = rPreferences.edit();
+        prefEditor.putLong("LastRefreshed", date.getTime());
+        prefEditor.commit();
+        //========================================================
+        
+        Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
+		
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.rokzin.converto.core;
+package com.rokzin.converto.currency;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,20 +62,24 @@ public class HttpURLRequest  {
 				String convertedValue = splitLine[1].replace("\"", "");
 				Log.i("ConverToLog","Adding "+convertedValue + " "+ i);
 				if(Double.valueOf(convertedValue)==0.0){
-					CurrencyRates.conversionRatio.add(Double.valueOf(1.0));
+					Currency.RATES.add(Double.valueOf(1.0));
 				}
 				else{
 				
-				CurrencyRates.conversionRatio.add(Double.valueOf(convertedValue));
+					Currency.RATES.add(Double.valueOf(convertedValue));
 				}
 	        }
+
 	    } catch (IOException e) {
 	        e.printStackTrace();
+
 	    } finally {
 	        try {
 	            is.close();
+
 	        } catch (IOException e) {
 	            e.printStackTrace();
+
 	        }
 	    }
 	}

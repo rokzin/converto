@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.rokzin.converto.R;
 import com.rokzin.converto.core.ResultItem;
-import com.rokzin.converto.storage.Store;
+import com.rokzin.converto.storage.StoreView;
 
 public class CustomView extends RelativeLayout implements OnItemClickListener, OnItemLongClickListener{
 	Context rContext;
@@ -89,7 +89,9 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		rInput = new EditText(rContext);
 		rInput.setGravity(Gravity.RIGHT);
 		rInput.setTextSize(35);
+		rInput.setTextColor(rContext.getResources().getColor(R.color.teal));
 		rInput.setHint("Enter a number");
+		rInput.setCursorVisible(true);
 		rInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		rInput.setId(1);
 		rSpinner = new Spinner(rContext);
@@ -170,8 +172,8 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		    		Toast.makeText(rContext,fullyQualifiedConversion + " copied to clipboard." , Toast.LENGTH_LONG).show();	
 		        }
 		        if(which==2){
-		        	new Store(fullyQualifiedConversion, rContext);
-		        	//SaveForLater.reInitialize();
+		        	StoreView.addAndRefresh(fullyQualifiedConversion);
+		        	
 		        }
 		    }
 		});

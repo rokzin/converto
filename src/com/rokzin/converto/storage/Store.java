@@ -47,6 +47,7 @@ public class Store {
 	}
 
 	private Context rContext;
+	private BufferedReader reader;
 	
 	
 	public Store(String value,Context context){
@@ -54,9 +55,7 @@ public class Store {
 		storeValue(value);
 	}
 	
-	public Store() {
-	
-	}
+	public Store() {}
 	  private void storeValue(String value) {
 		 
 		 
@@ -86,16 +85,15 @@ public class Store {
 		    	InputStream is = new FileInputStream(yourFile);
 		    	if(is != null){
 		    		InputStreamReader iSR = new InputStreamReader(is);
-		    		BufferedReader reader = new BufferedReader(iSR);
+		    		reader = new BufferedReader(iSR);
 		    		
 		    		String line;
-		    		while(reader.readLine() != null){
-		    			line = reader.readLine();
-			        	String sl[] = line.split(",");
+		    		while((line=reader.readLine()) != null){
+		    			String sl[] = line.split(",");
 			        	Date d = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(sl[1]);
 			        	StoreItem si = new StoreItem(sl[0], d);
 			            savedData.add(si);
-		    		}
+			        }
 		    	}
 		    
 	        is.close();

@@ -9,8 +9,8 @@
  	>
 
 <TextView 
-	android:layout_width="fill_parent"
-    android:layout_height="45sp"
+	android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/store_value"
     android:gravity="center_horizontal"
     android:paddingTop="5sp"
@@ -20,8 +20,8 @@
 	                    />
 	                   
 <TextView 
-    android:layout_width="fill_parent"
-    android:layout_height="25sp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/store_date"
     android:gravity="center_horizontal"
     android:paddingBottom="5sp"
