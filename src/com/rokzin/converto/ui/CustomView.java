@@ -180,5 +180,9 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		builder.show();
 		return false;
 	}
+	
+	public String getText(){
+		return rInput.getText().toString();
+	}
 
 }

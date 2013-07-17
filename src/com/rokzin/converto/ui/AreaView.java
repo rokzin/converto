@@ -78,5 +78,7 @@ public class AreaView extends CustomView implements ICustomView {
 		setResults(rArea.getValues());
 
 	}
+	
+	
 
 }

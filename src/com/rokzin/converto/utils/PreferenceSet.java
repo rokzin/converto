@@ -32,8 +32,8 @@ public class PreferenceSet {
 		menu_items.add(SPEED);
 		menu_items.add(VOLUME);
 		menu_items.add(AREA);
-		menu_items.add(CURRENCY);
 		menu_items.add(ANGLE);
+		menu_items.add(CURRENCY);
 		menu_items.add(SAVEFORLATER);
 		
 		return menu_items;

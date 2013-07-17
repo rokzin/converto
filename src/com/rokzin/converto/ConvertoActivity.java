@@ -1,7 +1,9 @@
 package com.rokzin.converto;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,6 +40,9 @@ import com.rokzin.converto.ui.CurrencyView;
 import com.rokzin.converto.ui.CustomView;
 import com.rokzin.converto.ui.LengthView;
 import com.rokzin.converto.ui.MassView;
+import com.rokzin.converto.ui.PowerView;
+import com.rokzin.converto.ui.PressureView;
+import com.rokzin.converto.ui.SpeedView;
 import com.rokzin.converto.ui.TemperatureView;
 import com.rokzin.converto.ui.VolumeView;
 import com.rokzin.converto.utils.Formatting;
@@ -50,22 +55,32 @@ public class ConvertoActivity extends Activity {
 	private SlideHolder mSlideHolder;
 	private ViewSwitcher viewSwitcher;
 
-	private ListView menu_items;
-	private Menu menu;
-	private LengthView lengthView;
-	private VolumeView volumeView;
-	private AreaView areaView;
-	private CurrencyView currencyView;
-	private MassView massView;
-	private TemperatureView temperatureView;
-	private AngleView angleView;
+	private ListView sideBar;
+	private Menu options;
+	private MenuItem type;
+	
+	
 	public static int APP_HEIGHT;
 	public static int APP_WIDTH;
 	public SharedPreferences rPreferences;
 	private OnSharedPreferenceChangeListener rPreferenceListener;
-	private StoreView saveForLaterView;
+
 	private Context rContext;
 	public static File file;
+	
+	public String savedInputValue;
+	
+	private List<View> allViews = new ArrayList<View>();
+	
+	private class CustomMenuItemListener implements OnMenuItemClickListener{
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			mSlideHolder.toggle();
+			return true;
+		}
+		
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,14 +91,22 @@ public class ConvertoActivity extends Activity {
 		rPreferences = PreferenceManager.getDefaultSharedPreferences(ConvertoActivity.this);
 
 		initialize();
-
+		viewSwitcher.addView(allViews.get(0));
 	}
 
 	private void initialize() {
-		
-;
 		// setting the roundoff on load
 		Formatting.setRoundOff(Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceSet.PREF_ROUND_OFF, "2")));
+		createViews();
+		setupSidebar();
+		setPreferenceChangeListener();
+		createStorageFile();
+
+	}
+
+	private void setPreferenceChangeListener() {
+		
+;
 
 		rPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 
@@ -100,61 +123,67 @@ public class ConvertoActivity extends Activity {
 		};
 
 		rPreferences.registerOnSharedPreferenceChangeListener(rPreferenceListener);
-		menu_items = (ListView) findViewById(R.id.menu_list);
+		
+		
+		
+	}
+
+	private void setupSidebar() {
+		
+		sideBar = (ListView) findViewById(R.id.menu_list);
 		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
-		massView = new MassView(rContext);
-		temperatureView = new TemperatureView(rContext);
-		lengthView = new LengthView(rContext);
-		volumeView = new VolumeView(rContext);
-		areaView = new AreaView(rContext);
-		currencyView = new CurrencyView(rContext);
-		angleView = new AngleView(rContext);
-		saveForLaterView = new StoreView(rContext);
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(rContext, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
-		menu_items.setAdapter(adapter);
-		menu_items.setOnItemClickListener(new OnItemClickListener() {
+		sideBar.setAdapter(adapter);
+		sideBar.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> av, View v, int id, long id2) {
-				String selected_item = (String) menu_items.getItemAtPosition(id);
-				if (selected_item == PreferenceSet.TEMPERATURE) {
-					checkOrientationAndLoadView(0, temperatureView);
-
-				}
-				if (selected_item == PreferenceSet.MASS) {
-					checkOrientationAndLoadView(0, massView);
-
-				}
-				if (selected_item == PreferenceSet.LENGTH) {
-					checkOrientationAndLoadView(0, lengthView);
-
-				}
-				if (selected_item == PreferenceSet.VOLUME) {
-					checkOrientationAndLoadView(0, volumeView);
-
-				}
-				if (selected_item == PreferenceSet.AREA) {
-					checkOrientationAndLoadView(0, areaView);
-
-				}
-				 if (selected_item == PreferenceSet.CURRENCY) {
-				 checkOrientationAndLoadView(0, currencyView);
-				
-				 }
-				if (selected_item == PreferenceSet.ANGLE) {
-					checkOrientationAndLoadView(0, angleView);
-				}
-				if (selected_item == PreferenceSet.SAVEFORLATER) {
-					checkOrientationAndLoadView(0, saveForLaterView);
-				}
-
-			}
+				checkOrientationAndLoadView(0, allViews.get(id));
+				options.getItem(0).setTitle(viewSwitcher.getCurrentView().toString());
+							}
 
 		});
 		
-		viewSwitcher.addView(angleView);
-		createStorageFile();
+	}
 
+	private void createViews() {
+		
+		TemperatureView temperatureView = new TemperatureView(rContext);
+		temperatureView.setId(0);
+		LengthView lengthView = new LengthView(rContext);
+		lengthView.setId(1);
+		MassView massView = new MassView(rContext);
+		massView.setId(2);
+		PowerView powerView = new PowerView(rContext);
+		powerView.setId(3);
+		PressureView pressureView = new PressureView(rContext);
+		pressureView.setId(4);
+		SpeedView speedView = new SpeedView(rContext);
+		speedView.setId(5);
+		VolumeView volumeView = new VolumeView(rContext);
+		volumeView.setId(6);
+		AreaView areaView = new AreaView(rContext);
+		areaView.setId(7);
+		AngleView angleView = new AngleView(rContext);
+		angleView.setId(8);
+		CurrencyView currencyView = new CurrencyView(rContext);
+		currencyView.setId(9);
+		StoreView storeView = new StoreView(rContext);
+		storeView.setId(10);
+		
+		allViews.add(temperatureView);
+		allViews.add(lengthView);
+		allViews.add(massView);
+		allViews.add(powerView);
+		allViews.add(pressureView);
+		allViews.add(speedView);
+		allViews.add(volumeView);
+		allViews.add(areaView);
+		allViews.add(angleView);
+		allViews.add(currencyView);
+		allViews.add(storeView);
+			
 	}
 
 	private void createStorageFile() {
@@ -162,40 +191,39 @@ public class ConvertoActivity extends Activity {
 		
 		rDir.mkdirs();
 		file = new File(rDir, "ConverTo.txt");
-		saveForLaterView.refresh();
+		((StoreView)allViews.get(10)).refresh();
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-	//TODO
+		super.onSaveInstanceState(outState);
+		outState.putInt("View ID", viewSwitcher.getCurrentView().getId());
+		outState.putString("InputText", ((CustomView)viewSwitcher.getCurrentView()).getText());
 	}
 	
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-	//TODO
+		super.onRestoreInstanceState(savedInstanceState);
+		int viewID = savedInstanceState.getInt("View ID");
+	initialize();
+	checkOrientationAndLoadView(1, allViews.get(viewID));
+		
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuItem item_type = menu.add("Type");
-		menu.add("Settings");
-		item_type.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		menu.getItem(0).setTitle(angleView.toString());
-		this.menu = menu;
-
-		item_type.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			public boolean onMenuItemClick(MenuItem item) {
-				mSlideHolder.toggle();
-				return true;
-			}
-		});
-
+		this.options = menu;
+		type = options.add("Type");
+		options.add("Settings");
+		type.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		options.getItem(0).setTitle(viewSwitcher.getCurrentView().toString());
+		type.setOnMenuItemClickListener(new CustomMenuItemListener());
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item == menu.getItem(1)) {
+		if (item == options.getItem(1)) {
 			Intent i = new Intent(rContext, SettingsActivity.class);
 			startActivityForResult(i, 1);
 		}
@@ -223,7 +251,7 @@ public class ConvertoActivity extends Activity {
 
 		
 		viewSwitcher.removeAllViews(); // clear any previous views
-		menu.getItem(0).setTitle(currentView.toString());// set title
+		//menu.getItem(0).setTitle(currentView.toString());// set title
 		viewSwitcher.addView(currentView);
 		
 		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();

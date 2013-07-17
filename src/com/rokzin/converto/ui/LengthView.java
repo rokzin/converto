@@ -72,5 +72,7 @@ public class LengthView extends CustomView implements ICustomView {
 		setResults(rLength.getValues());
 
 	}
+	
+	
 
 }
