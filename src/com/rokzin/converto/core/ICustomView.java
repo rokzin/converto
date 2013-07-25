@@ -4,4 +4,8 @@ public interface ICustomView {
 
 	public void reinitialize();
 	
+	public void loadLandscapeView();
+	
+	public void loadPotraitView();
+	
 }

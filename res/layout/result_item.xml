@@ -4,13 +4,16 @@
     
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
  	>
-
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 <TextView 
     android:layout_width="0dp"
-    android:layout_height="75sp"
+    android:layout_height="85sp"
     android:id="@+id/result_value"
     android:gravity="right|center_horizontal"
     android:paddingTop="15sp"
@@ -24,7 +27,7 @@
 	                    </TextView>
 <TextView 
     android:layout_width="0dp"
-    android:layout_height="75sp"
+    android:layout_height="85sp"
     android:id="@+id/result_unit"
     android:gravity="left|center_horizontal"
     android:paddingTop="15sp"
@@ -38,8 +41,8 @@
     
 </TextView>
 
+</LinearLayout>
 
 
-
-
+<View android:layout_width="match_parent" android:layout_height="1sp" android:background="@color/gGray" android:layout_gravity="bottom|center_horizontal"/>
 </LinearLayout>

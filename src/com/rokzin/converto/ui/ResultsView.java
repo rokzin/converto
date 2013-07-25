@@ -21,6 +21,7 @@ public class ResultsView extends ListView {
 	public ResultsView(Context context) {
 		super(context);
 		rContext = context;
+		setPadding(0, 10, 0, 0);
 	}
 
 	public void setResults(ArrayList<ResultItem> results) {

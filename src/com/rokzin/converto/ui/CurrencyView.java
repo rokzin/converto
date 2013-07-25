@@ -6,15 +6,18 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.CustomObject;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class CurrencyView extends RelativeLayout{
+public class CurrencyView extends RelativeLayout implements ICustomView{
 	
 	private Context rContext;
 	private TextView currencyType1;
@@ -25,6 +28,8 @@ public class CurrencyView extends RelativeLayout{
 	private LayoutParams currencyType2LP;
 	private LayoutParams type1ValueLP;
 	private LayoutParams type2ValueLP;
+	private int screenHeight;
+	private int screenWidth;
 
 	public CurrencyView(Context context, AttributeSet attrs, int theme) {
 		super(context, attrs, theme);
@@ -40,32 +45,15 @@ public class CurrencyView extends RelativeLayout{
 	
 	private void initialize() {
 		
-		int screenWidth = rContext.getResources().getDisplayMetrics().widthPixels;
-		int screenHeight = rContext.getResources().getDisplayMetrics().heightPixels;
+	
+		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
+			loadPotraitView();
+		}
+		else {
+			loadLandscapeView();
+		}
 		
-		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
-		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
-		
-		
-		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 11);
-		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 22);
-		
-		currencyType1LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
-		currencyType2LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{});
-		
-		type1ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
-		type2ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, 120, new int[]{});
-		
-		type1ValueLP.addRule(RelativeLayout.RIGHT_OF, currencyType1.getId());
-		type2ValueLP.addRule(RelativeLayout.BELOW, currencyType1.getId());
-		currencyType2LP.addRule(RelativeLayout.RIGHT_OF, type2Value.getId());
-		currencyType2LP.addRule(RelativeLayout.BELOW, type1Value.getId());
-		
-		
-		this.addView(currencyType1, currencyType1LP);
-		this.addView(type1Value,type1ValueLP);
-		this.addView(type2Value,type2ValueLP);
-		this.addView(currencyType2, currencyType2LP);
 
 	}
 
@@ -121,6 +109,73 @@ public class CurrencyView extends RelativeLayout{
 	        return true;
 	    }
 	    return false;
+	}
+
+	@Override
+	public void reinitialize() {}
+
+	@Override
+	public void loadLandscapeView() {
+		screenWidth = rContext.getResources().getDisplayMetrics().widthPixels;
+		screenHeight = rContext.getResources().getDisplayMetrics().heightPixels;
+	
+		removeAllViews();
+		
+		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		
+		
+		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 11);
+		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 22);
+		
+		currencyType1LP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
+		currencyType2LP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.ALIGN_PARENT_TOP});
+		
+		type1ValueLP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{});
+		type2ValueLP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{});
+		
+		currencyType2LP.addRule(RelativeLayout.RIGHT_OF, currencyType1.getId());
+		type1ValueLP.addRule(RelativeLayout.BELOW, currencyType1.getId());
+		type2ValueLP.addRule(RelativeLayout.RIGHT_OF, type1Value.getId());
+		type2ValueLP.addRule(RelativeLayout.BELOW, currencyType2.getId());
+		
+		this.addView(currencyType1, currencyType1LP);
+		this.addView(type1Value,type1ValueLP);
+		this.addView(type2Value,type2ValueLP);
+		this.addView(currencyType2, currencyType2LP);
+		
+	}
+
+	@Override
+	public void loadPotraitView() {
+		screenWidth = rContext.getResources().getDisplayMetrics().widthPixels;
+		screenHeight = rContext.getResources().getDisplayMetrics().heightPixels;
+	
+		removeAllViews();
+		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		
+		
+		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 11);
+		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 22);
+		
+		currencyType1LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
+		currencyType2LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{});
+		
+		type1ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
+		type2ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, 120, new int[]{});
+		
+		type1ValueLP.addRule(RelativeLayout.RIGHT_OF, currencyType1.getId());
+		type2ValueLP.addRule(RelativeLayout.BELOW, currencyType1.getId());
+		currencyType2LP.addRule(RelativeLayout.RIGHT_OF, type2Value.getId());
+		currencyType2LP.addRule(RelativeLayout.BELOW, type1Value.getId());
+		
+		
+		this.addView(currencyType1, currencyType1LP);
+		this.addView(type1Value,type1ValueLP);
+		this.addView(type2Value,type2ValueLP);
+		this.addView(currencyType2, currencyType2LP);
+		
 	}
 	
 	

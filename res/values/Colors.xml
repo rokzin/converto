@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="HoloBlue">#0099cc</color>
+    
     <color name="teal">#527578</color>
     <color name="richLeather">#ADA692</color>
     <color name="yahooColor">#63879F</color>
-    </resources>
+    <color name="gGray">#E5E5E5</color>
+    
+</resources>
     

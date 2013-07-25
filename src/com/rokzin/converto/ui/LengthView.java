@@ -73,6 +73,5 @@ public class LengthView extends CustomView implements ICustomView {
 
 	}
 	
-	
 
 }

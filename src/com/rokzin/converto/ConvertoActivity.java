@@ -149,27 +149,27 @@ public class ConvertoActivity extends Activity {
 
 	private void createViews() {
 		
-		TemperatureView temperatureView = new TemperatureView(rContext);
+		TemperatureView temperatureView = new TemperatureView(ConvertoActivity.this);
 		temperatureView.setId(0);
-		LengthView lengthView = new LengthView(rContext);
+		LengthView lengthView = new LengthView(ConvertoActivity.this);
 		lengthView.setId(1);
-		MassView massView = new MassView(rContext);
+		MassView massView = new MassView(ConvertoActivity.this);
 		massView.setId(2);
-		PowerView powerView = new PowerView(rContext);
+		PowerView powerView = new PowerView(ConvertoActivity.this);
 		powerView.setId(3);
-		PressureView pressureView = new PressureView(rContext);
+		PressureView pressureView = new PressureView(ConvertoActivity.this);
 		pressureView.setId(4);
-		SpeedView speedView = new SpeedView(rContext);
+		SpeedView speedView = new SpeedView(ConvertoActivity.this);
 		speedView.setId(5);
-		VolumeView volumeView = new VolumeView(rContext);
+		VolumeView volumeView = new VolumeView(ConvertoActivity.this);
 		volumeView.setId(6);
-		AreaView areaView = new AreaView(rContext);
+		AreaView areaView = new AreaView(ConvertoActivity.this);
 		areaView.setId(7);
-		AngleView angleView = new AngleView(rContext);
+		AngleView angleView = new AngleView(ConvertoActivity.this);
 		angleView.setId(8);
-		CurrencyView currencyView = new CurrencyView(rContext);
+		CurrencyView currencyView = new CurrencyView(ConvertoActivity.this);
 		currencyView.setId(9);
-		StoreView storeView = new StoreView(rContext);
+		StoreView storeView = new StoreView(ConvertoActivity.this);
 		storeView.setId(10);
 		
 		allViews.add(temperatureView);
@@ -211,7 +211,7 @@ public class ConvertoActivity extends Activity {
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu( Menu menu) {
 		this.options = menu;
 		type = options.add("Type");
 		options.add("Settings");
@@ -258,14 +258,14 @@ public class ConvertoActivity extends Activity {
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			
 			if (currentView instanceof ICustomView) {
-				((CustomView) currentView).loadPotraitView();
+				((ICustomView) currentView).loadPotraitView();
 				((ICustomView) currentView).reinitialize();
 			}
 		}
 		else {
 			
 			if (currentView instanceof ICustomView) {
-				((CustomView) currentView).loadLandscapeView();
+				((ICustomView) currentView).loadLandscapeView();
 				((ICustomView) currentView).reinitialize();
 			}
 		}

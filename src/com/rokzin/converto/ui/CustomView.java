@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -38,6 +39,7 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 	public CustomView(Context context) {
 		super(context);
 		rContext = context;
+		setBackgroundColor(Color.WHITE);
 	}
 
 	public CustomView(Context context, AttributeSet attrs, int theme) {
@@ -102,7 +104,7 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		rResultsView.setOnItemClickListener(this);
 		rResultsView.setOnItemLongClickListener(this);
 		rInput.setText("1");
-
+		
 		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			loadPotraitView();

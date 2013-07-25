@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.storage.Store.StoreItem;
 import com.rokzin.converto.utils.CustomObject;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class StoreView extends RelativeLayout{
+public class StoreView extends RelativeLayout implements ICustomView{
 
 
 	private static Context rContext;
@@ -36,8 +39,14 @@ public class StoreView extends RelativeLayout{
 	private void initialize() {
 		
 		list = new ListView(rContext);
-		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
-		this.addView(list,lLP);
+		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
+			loadPotraitView();
+		}
+		else {
+			loadLandscapeView();
+		}
+		
 	}
 	
 	public void refresh() {
@@ -50,6 +59,26 @@ public class StoreView extends RelativeLayout{
 		Store s = new Store(value,rContext);
 		ArrayList<StoreItem> l = s.retrieveValues();
 		list.setAdapter(new StoreItemBaseAdapter(rContext, l));
+	}
+
+	@Override
+	public void reinitialize() {}
+
+	@Override
+	public void loadLandscapeView() {
+		removeAllViews();
+		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
+		this.addView(list,lLP);
+		
+	}
+
+	@Override
+	public void loadPotraitView() {
+		removeAllViews();
+
+		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
+		this.addView(list,lLP);
+		
 	}
 
 }
