@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,11 +16,10 @@ import android.util.Log;
 
 public class HttpURLRequest  {
 	
-	private static double result;
-	
+	private ArrayList<Double> rates = new ArrayList<Double>();
 
-	public double getResult() {
-		return result;
+	public ArrayList<Double> getResults() {
+		return rates;
 	}
 	public HttpURLRequest(String URL) {
 		connect(URL);
@@ -62,11 +62,11 @@ public class HttpURLRequest  {
 				String convertedValue = splitLine[1].replace("\"", "");
 				Log.i("ConverToLog","Adding "+convertedValue + " "+ i);
 				if(Double.valueOf(convertedValue)==0.0){
-					Currency.RATES.add(Double.valueOf(1.0));
+					rates.add(Double.valueOf(1.0));
 				}
 				else{
 				
-					Currency.RATES.add(Double.valueOf(convertedValue));
+					rates.add(Double.valueOf(convertedValue));
 				}
 	        }
 

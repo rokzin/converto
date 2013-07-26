@@ -49,12 +49,6 @@ public class StoreView extends RelativeLayout implements ICustomView{
 		
 	}
 	
-	public void refresh() {
-		Store s = new Store();
-		ArrayList<StoreItem> l = s.retrieveValues();
-		list.setAdapter(new StoreItemBaseAdapter(rContext, l));
-		
-	}
 	public static void addAndRefresh(String value) {
 		Store s = new Store(value,rContext);
 		ArrayList<StoreItem> l = s.retrieveValues();
@@ -62,11 +56,15 @@ public class StoreView extends RelativeLayout implements ICustomView{
 	}
 
 	@Override
-	public void reinitialize() {}
+	public void reinitialize() {
+		Store s = new Store();
+		ArrayList<StoreItem> l = s.retrieveValues();
+		list.setAdapter(new StoreItemBaseAdapter(rContext, l));
+	}
 
 	@Override
 	public void loadLandscapeView() {
-		removeAllViews();
+		this.removeAllViews();
 		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
 		this.addView(list,lLP);
 		
@@ -74,7 +72,7 @@ public class StoreView extends RelativeLayout implements ICustomView{
 
 	@Override
 	public void loadPotraitView() {
-		removeAllViews();
+		this.removeAllViews();
 
 		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
 		this.addView(list,lLP);

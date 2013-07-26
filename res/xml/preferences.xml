@@ -3,7 +3,7 @@
 
    
     
-    <PreferenceCategory android:title="@string/settings_other_setting" >
+    <PreferenceCategory android:title="@string/settings_general_setting" >
         <ListPreference
         android:key="prefRoundOff"
         android:title="@string/pref_round_off"
@@ -12,10 +12,12 @@
         android:entryValues="@array/pref_round_off_values"
         android:defaultValue="@string/pref_round_off_default" />
         
-        <CheckBoxPreference 
-            	android:title="@string/pref_default_view" 
-            	android:summary="@string/pref_default_view_sum" 
-            	android:key="prefDefaultView"/>
+        <Preference 
+        	android:key="prefClearHistory"
+         	android:title="@string/pref_clear_history"
+         
+         />
+
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/settings_about" >

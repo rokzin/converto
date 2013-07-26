@@ -19,9 +19,11 @@ public class PreferenceSet {
 	public final static String ANGLE = "Angle";
 	public final static String SAVEFORLATER = "Saved";
 	
+	
 
 	public static final String PREF_ROUND_OFF = "prefRoundOff";
-
+	public final static String PREF_CLEAR_HISTORY = "prefClearHistory";
+	
 	public static List<String> getMenuItems() {
 		List<String> menu_items = new ArrayList<String>();
 		menu_items.add(TEMPERATURE);

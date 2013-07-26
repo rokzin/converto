@@ -15,8 +15,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -32,7 +35,7 @@ import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
-import com.rokzin.converto.currency.Currency;
+import com.rokzin.converto.currency.HttpURLRequest;
 import com.rokzin.converto.storage.StoreView;
 import com.rokzin.converto.ui.AngleView;
 import com.rokzin.converto.ui.AreaView;
@@ -45,6 +48,7 @@ import com.rokzin.converto.ui.PressureView;
 import com.rokzin.converto.ui.SpeedView;
 import com.rokzin.converto.ui.TemperatureView;
 import com.rokzin.converto.ui.VolumeView;
+import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 import com.rokzin.converto.utils.SettingsActivity;
@@ -52,26 +56,6 @@ import com.rokzin.converto.utils.SettingsActivity;
 //Robin - Rohit
 public class ConvertoActivity extends Activity {
 
-	private SlideHolder mSlideHolder;
-	private ViewSwitcher viewSwitcher;
-
-	private ListView sideBar;
-	private Menu options;
-	private MenuItem type;
-	
-	
-	public static int APP_HEIGHT;
-	public static int APP_WIDTH;
-	public SharedPreferences rPreferences;
-	private OnSharedPreferenceChangeListener rPreferenceListener;
-
-	private Context rContext;
-	public static File file;
-	
-	public String savedInputValue;
-	
-	private List<View> allViews = new ArrayList<View>();
-	
 	private class CustomMenuItemListener implements OnMenuItemClickListener{
 
 		@Override
@@ -81,70 +65,65 @@ public class ConvertoActivity extends Activity {
 		}
 		
 	}
+	public static int APP_HEIGHT;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_converto);
-		rContext = getApplicationContext();
-		mSlideHolder = (SlideHolder) findViewById(R.id.slideHolder);
-		rPreferences = PreferenceManager.getDefaultSharedPreferences(ConvertoActivity.this);
+	public static int APP_WIDTH;
+	public static File file;
+	private List<View> allViews = new ArrayList<View>();
+	
+	
+	private SlideHolder mSlideHolder;
+	private Menu options;
+	private Context rContext;
+	private OnSharedPreferenceChangeListener rPreferenceListener;
 
-		initialize();
-		viewSwitcher.addView(allViews.get(0));
+	public SharedPreferences rPreferences;
+	public String savedInputValue;
+	
+	private ListView sideBar;
+	
+	private MenuItem type;
+	
+	private ViewSwitcher viewSwitcher;
+
+	private void checkOrientationAndLoadView(int state, View currentView) {
+
+		/*
+		 * 0: toggle silder
+		 * 1: don't toggle slider
+		 */
+		if (state == 0) {
+			mSlideHolder.toggle();
+		}
+
+		
+		viewSwitcher.removeAllViews(); // clear any previous views
+		viewSwitcher.addView(currentView);
+		
+		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
+		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
+			
+				((ICustomView) currentView).loadPotraitView();
+				((ICustomView) currentView).reinitialize();
+
+		}
+		else {
+			
+				((ICustomView) currentView).loadLandscapeView();
+				((ICustomView) currentView).reinitialize();
+		}
+		
+		
+		
+
 	}
 
-	private void initialize() {
-		// setting the roundoff on load
-		Formatting.setRoundOff(Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceSet.PREF_ROUND_OFF, "2")));
-		createViews();
-		setupSidebar();
-		setPreferenceChangeListener();
-		createStorageFile();
-
-	}
-
-	private void setPreferenceChangeListener() {
+	private void createStorageFile() {
+		File rDir = new File("/sdcard/converto/");
 		
-;
-
-		rPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-
-			@Override
-			public void onSharedPreferenceChanged(SharedPreferences sP, String key) {
-
-				if (key.equals(PreferenceSet.PREF_ROUND_OFF)) {
-					Formatting.setRoundOff(Integer.parseInt(sP.getString(PreferenceSet.PREF_ROUND_OFF, "2")));
-					View v = viewSwitcher.getCurrentView();
-					((CustomView) v).reEnterText();
-				}
-			}
-
-		};
-
-		rPreferences.registerOnSharedPreferenceChangeListener(rPreferenceListener);
-		
-		
-		
-	}
-
-	private void setupSidebar() {
-		
-		sideBar = (ListView) findViewById(R.id.menu_list);
-		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
-
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(rContext, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
-		sideBar.setAdapter(adapter);
-		sideBar.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> av, View v, int id, long id2) {
-				checkOrientationAndLoadView(0, allViews.get(id));
-				options.getItem(0).setTitle(viewSwitcher.getCurrentView().toString());
-							}
-
-		});
-		
+		rDir.mkdirs();
+		file = new File(rDir, "ConverTo.txt");
+		((StoreView)allViews.get(10)).reinitialize();
 	}
 
 	private void createViews() {
@@ -186,28 +165,106 @@ public class ConvertoActivity extends Activity {
 			
 	}
 
-	private void createStorageFile() {
-		File rDir = new File("/sdcard/converto/");
+	private void getCurrencyRates() {
+
+		if(isOnline()){
+		ExecutorService executor = Executors.newFixedThreadPool(1);
+
+
+		FutureTask<String> future = new FutureTask<String>(
+                new Callable<String>()
+                {
+
+					@Override
+					public java.lang.String call() throws Exception {
+						ArrayList<Double> rates = new ArrayList<Double>();
+						String conversions="";
+						for (int i = 0; i < ConversionTypes.getCurrencyTypes().length; i++) {
+							conversions = conversions + ConversionTypes.getCurrencyTypes()[133]+ ConversionTypes.getCurrencyTypes()[i]+"=X,";
+						}
+						String source = "http://finance.yahoo.com/d/quotes.csv?e=.csv&f=c4l1&s=" +conversions;
+						Log.d("ConverToLog", source);
+						HttpURLRequest httpRequest = new HttpURLRequest(source);
+						;
+						for (Double result : httpRequest.getResults()) {
+							rates.add(result);
+						}
+
+						StringBuilder str = new StringBuilder();
+						for (Double rate : rates) {
+							str.append(rate).append(",");
+						}
+				        SharedPreferences.Editor prefEditor = rPreferences.edit();
+				        prefEditor.putString("CurrencyRates", str.toString());
+				        prefEditor.commit();
+				        
+					return "";
+					}
+                   
+                });
 		
-		rDir.mkdirs();
-		file = new File(rDir, "ConverTo.txt");
-		((StoreView)allViews.get(10)).refresh();
+        executor.execute(future);
+
+
+        //saving the last refreshed date to shared preferences
+        Date date = new Date(System.currentTimeMillis());
+        SharedPreferences.Editor prefEditor = rPreferences.edit();
+        prefEditor.putLong("LastRefreshed", date.getTime());
+        prefEditor.commit();
+        //========================================================
+        
+        Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
+        
+		}
+		else{
+			 Toast.makeText(rContext, "Network connection not detected.", Toast.LENGTH_SHORT).show();	
+		}
+		
+	}
+
+
+	private void initialize() {
+		// setting the roundoff on load
+		Formatting.setRoundOff(Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString(PreferenceSet.PREF_ROUND_OFF, "2")));
+		createViews();
+		setupSidebar();
+		setPreferenceChangeListener();
+		createStorageFile();
+
+	}
+
+	private boolean isOnline() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) rContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt("View ID", viewSwitcher.getCurrentView().getId());
-		outState.putString("InputText", ((CustomView)viewSwitcher.getCurrentView()).getText());
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+
+		checkOrientationAndLoadView(1, viewSwitcher.getCurrentView());
+
 	}
 	
 	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		int viewID = savedInstanceState.getInt("View ID");
-	initialize();
-	checkOrientationAndLoadView(1, allViews.get(viewID));
-		
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main_converto);
+		rContext = getApplicationContext();
+		mSlideHolder = (SlideHolder) findViewById(R.id.slideHolder);
+		rPreferences = PreferenceManager.getDefaultSharedPreferences(ConvertoActivity.this);
+
+		if(shouldBeRefreshed()){
+			getCurrencyRates();
+		}
+
+		initialize();
+		viewSwitcher.addView(allViews.get(0));
 	}
 	
 	@Override
@@ -232,53 +289,76 @@ public class ConvertoActivity extends Activity {
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		initialize();
+		int viewID = savedInstanceState.getInt("View ID");
+		
+		if(viewID!= 9 || viewID != 10){
+			((CustomView)allViews.get(viewID)).setText(savedInstanceState.getString("InputText"));
+		}
 
-		checkOrientationAndLoadView(1, viewSwitcher.getCurrentView());
-
+		checkOrientationAndLoadView(1, allViews.get(viewID));
+		
 	}
 
-	private void checkOrientationAndLoadView(int state, View currentView) {
-
-		/*
-		 * 0: toggle silder
-		 * 1: don't toggle slider
-		 */
-		if (state == 0) {
-			mSlideHolder.toggle();
-		}
-
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if(viewSwitcher.getCurrentView() instanceof StoreView  || viewSwitcher.getCurrentView() instanceof CurrencyView){
 		
-		viewSwitcher.removeAllViews(); // clear any previous views
-		//menu.getItem(0).setTitle(currentView.toString());// set title
-		viewSwitcher.addView(currentView);
-		
-		int orientation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
-		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
-			
-			if (currentView instanceof ICustomView) {
-				((ICustomView) currentView).loadPotraitView();
-				((ICustomView) currentView).reinitialize();
-			}
 		}
-		else {
-			
-			if (currentView instanceof ICustomView) {
-				((ICustomView) currentView).loadLandscapeView();
-				((ICustomView) currentView).reinitialize();
-			}
+		else{
+		outState.putInt("View ID", viewSwitcher.getCurrentView().getId());
+		outState.putString("InputText", ((CustomView)viewSwitcher.getCurrentView()).getText());
 		}
-		
-		
-		if(currentView instanceof CurrencyView && shouldBeRefreshed()){
-			
-			getCurrencyRates();
-			
-		}
-
 	}
 
+	
+	private void setPreferenceChangeListener() {
+		
+;
+
+		rPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+			@Override
+			public void onSharedPreferenceChanged(SharedPreferences sP, String key) {
+
+				if (key.equals(PreferenceSet.PREF_ROUND_OFF)) {
+					Formatting.setRoundOff(Integer.parseInt(sP.getString(PreferenceSet.PREF_ROUND_OFF, "2")));
+					View v = viewSwitcher.getCurrentView();
+					((CustomView) v).reEnterText();
+				}
+
+			}
+
+		};
+
+		rPreferences.registerOnSharedPreferenceChangeListener(rPreferenceListener);
+		
+		
+		
+	}
+
+	private void setupSidebar() {
+		
+		sideBar = (ListView) findViewById(R.id.menu_list);
+		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(rContext, R.layout.menu_item, R.id.menu_item, PreferenceSet.getMenuItems());
+		sideBar.setAdapter(adapter);
+		sideBar.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> av, View v, int id, long id2) {
+				checkOrientationAndLoadView(0, allViews.get(id));
+				options.getItem(0).setTitle(viewSwitcher.getCurrentView().toString());
+							}
+
+		});
+		
+	}
 	
 	private boolean shouldBeRefreshed() {
 		Date now = new Date();
@@ -294,34 +374,7 @@ public class ConvertoActivity extends Activity {
 		return true;
 	}
 
-	private void getCurrencyRates() {
 
-		ExecutorService executor = Executors.newFixedThreadPool(1);
 
-		FutureTask<String> future = new FutureTask<String>(
-                new Callable<String>()
-                {
-
-					@Override
-					public java.lang.String call() throws Exception {
-						Currency.getRates();
-						
-						return "";
-					}
-                   
-                });
-		
-        executor.execute(future);
- 
-        //saving the last refreshed date to shared preferences
-        Date date = new Date(System.currentTimeMillis());
-        SharedPreferences.Editor prefEditor = rPreferences.edit();
-        prefEditor.putLong("LastRefreshed", date.getTime());
-        prefEditor.commit();
-        //========================================================
-        
-        Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
-		
-	}
 
 }
