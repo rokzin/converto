@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.rokzin.converto.R;
-import com.rokzin.converto.storage.Store.StoreItem;
 
 public class StoreItemBaseAdapter extends BaseAdapter {
 	private static ArrayList<StoreItem> resultsList;

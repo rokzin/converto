@@ -1,6 +1,7 @@
 package com.rokzin.converto.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 import android.app.AlertDialog;
@@ -11,15 +12,19 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.currency.Currency;
+import com.rokzin.converto.storage.StoreItem;
+import com.rokzin.converto.storage.StoreItemBaseAdapter;
 import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.CustomObject;
 import com.rokzin.converto.utils.Formatting;
@@ -88,6 +93,10 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	private ArrayList<Double> rates = new ArrayList<Double>();
 	private Context rContext;
 	private int screenWidth;
+	
+	private ListView rPopularConversions;
+	private long lastRefreshed;
+	
 
 	public CurrencyView(Context context) {
 		super(context);
@@ -114,8 +123,7 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	}
 
 	private void convert(int i) {
-		type1Value.removeTextChangedListener(fCustomTextWatcher);
-		type2Value.removeTextChangedListener(fCustomTextWatcher);
+		removeAllListeners();
 
 			if(i == 11 || i == 1 ){
 				if(!Formatting.isEmptyOrNull(type1Value)){
@@ -170,7 +178,15 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 
 	private void initialize() {
 		
-	
+		lastRefreshed = rContext.getSharedPreferences("com.rokzin.converto_preferences", 0).getLong("LastRefreshed", 0);
+		
+		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{}, 11);
+		type1Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{}, 22);
+		type2Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		
 		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			loadPotraitView();
@@ -179,7 +195,10 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 			loadLandscapeView();
 		}
 		
-
+		
+		
+		
+	
 	}
 
 	@Override
@@ -188,45 +207,58 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	
 		removeAllViews();
 		
-		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
-		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		rPopularConversions = new ListView(rContext);
+		RelativeLayout.LayoutParams listLP = CustomObject.getCustomParams(screenWidth, LayoutParams.WRAP_CONTENT, new int[]{});
+		listLP.addRule(RelativeLayout.BELOW, type2Value.getId());
 		
+		currencyType1LP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
+		currencyType2LP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.ALIGN_PARENT_TOP});
 		
-		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 11);
-		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 22);
-		type1Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		type2Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		type1ValueLP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT});
+		type2ValueLP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT});
 		
-		currencyType1LP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
-		currencyType2LP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.ALIGN_PARENT_TOP});
-		
-		type1ValueLP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{});
-		type2ValueLP = CustomObject.getCustomParams(screenWidth * 2/5, 120, new int[]{});
-		
-		currencyType2LP.addRule(RelativeLayout.RIGHT_OF, currencyType1.getId());
 		type1ValueLP.addRule(RelativeLayout.BELOW, currencyType1.getId());
-		type2ValueLP.addRule(RelativeLayout.RIGHT_OF, type1Value.getId());
 		type2ValueLP.addRule(RelativeLayout.BELOW, currencyType2.getId());
 		
 		this.addView(currencyType1, currencyType1LP);
+		
+			TextView equalTo = CustomObject.getCustomTextView(rContext, 111, Color.TRANSPARENT, Color.parseColor("#63879F"), 24, "=");
+			RelativeLayout.LayoutParams params = CustomObject.getCustomParams(screenWidth*2/20, 240, new int[]{RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.CENTER_HORIZONTAL});
+			equalTo.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+			this.addView(equalTo, params);
+			
+		this.addView(currencyType2, currencyType2LP);
 		this.addView(type1Value,type1ValueLP);
 		this.addView(type2Value,type2ValueLP);
-		this.addView(currencyType2, currencyType2LP);
 		
+		this.addView(rPopularConversions,listLP);
+		removeAllListeners();
 		addListeners();
+		createBottomSection();
 		
 	}
+	private void createBottomSection() {
+		TextView lastRefeshedView = new TextView(rContext);
+		
+		RelativeLayout.LayoutParams params = CustomObject.getCustomParams(screenWidth, 50, new int[]{RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL});
+		
+		lastRefeshedView.setText(new Date(lastRefreshed).toString());
+		lastRefeshedView.setBackgroundColor(Color.parseColor("#63879F"));
+		lastRefeshedView.setTextColor(Color.WHITE);
+		lastRefeshedView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+		this.addView(lastRefeshedView, params);
+		
+	}
+
 	@Override
 	public void loadPotraitView() {
 		screenWidth = rContext.getResources().getDisplayMetrics().widthPixels;
 	
 		removeAllViews();
-		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
-		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
-		
-		
-		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 11);
-		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{InputType.TYPE_CLASS_NUMBER,InputType.TYPE_NUMBER_FLAG_DECIMAL}, 22);
+
+		rPopularConversions = new ListView(rContext);
+		RelativeLayout.LayoutParams listLP = CustomObject.getCustomParams(screenWidth, LayoutParams.WRAP_CONTENT, new int[]{});
+		listLP.addRule(RelativeLayout.BELOW, currencyType2.getId());
 		
 		currencyType1LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
 		currencyType2LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{});
@@ -244,19 +276,50 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		this.addView(type1Value,type1ValueLP);
 		this.addView(type2Value,type2ValueLP);
 		this.addView(currencyType2, currencyType2LP);
+		this.addView(rPopularConversions,listLP);
+		removeAllListeners();
 		addListeners();
+		createBottomSection();
 		
 	}
 
 	@Override
 	public void reinitialize() {
 		getSavedRates();
+		
+		
+		Date lrdate = new Date(lastRefreshed);
+		ArrayList<StoreItem> l = new ArrayList<StoreItem>();
+		
+		Currency c = new Currency(rates.get(133), rates.get(41), 1);
+		StoreItem s = new StoreItem("1 USD = "+Formatting.roundOff(c.getResult())+" GBP", lrdate);
+		l.add(s);
+		
+		Currency c2 = new Currency(rates.get(133), rates.get(38), 1);
+		StoreItem s2 = new StoreItem("1 USD = "+Formatting.roundOff(c2.getResult())+" EUR", lrdate);
+		l.add(s2);
+		
+		Currency c3 = new Currency(rates.get(133), rates.get(55), 1);
+		StoreItem s3 = new StoreItem("1 USD = "+Formatting.roundOff(c3.getResult())+" INR", lrdate);
+		l.add(s3);
+		
+		Currency c4 = new Currency(rates.get(133), rates.get(23), 1);
+		StoreItem s4 = new StoreItem("1 USD = "+Formatting.roundOff(c4.getResult())+" CNY", lrdate);
+		l.add(s4);
+		
+		rPopularConversions.setAdapter(new StoreItemBaseAdapter(rContext, l));
 
 	}
 
 	@Override
 	public String toString() {
 		return PreferenceSet.CURRENCY;
+	}
+	
+	public void removeAllListeners(){
+		type1Value.removeTextChangedListener(fCustomTextWatcher);
+		type2Value.removeTextChangedListener(fCustomTextWatcher);
+		
 	}
 	
 	

@@ -10,7 +10,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.rokzin.converto.core.ICustomView;
-import com.rokzin.converto.storage.Store.StoreItem;
 import com.rokzin.converto.utils.CustomObject;
 import com.rokzin.converto.utils.PreferenceSet;
 
