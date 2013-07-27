@@ -62,6 +62,15 @@ public class ConversionTypes {
 		return pressureTypes;
 	}
 	
+	public static String[] getMassTypes() {
+
+		String massTypes[] = { "carat","cental","centigram","dekagram","dram(dr)","grain(gr)","gram(g)","hundredweight(UK)","kilogram(kg)","microgram(µg)","milligram(mg)","newton(earth)","ounce(oz)","pennyweight(dwt)","pound(lb)","quarter","stone","ton(UK)","ton(US)","tonne(t)","troy ounce"};
+
+		return massTypes;
+	}
+	
+	
+	
 	
 	
 }
