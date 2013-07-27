@@ -297,9 +297,13 @@ public class ConvertoActivity extends Activity {
 		
 		if(viewID!= 9 || viewID != 10){
 			((CustomView)allViews.get(viewID)).setText(savedInstanceState.getString("InputText"));
+			checkOrientationAndLoadView(1, allViews.get(viewID));
+		}
+		else{
+			checkOrientationAndLoadView(1, allViews.get(0));
 		}
 
-		checkOrientationAndLoadView(1, allViews.get(viewID));
+		
 		
 	}
 

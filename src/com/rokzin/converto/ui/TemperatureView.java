@@ -68,6 +68,9 @@ public class TemperatureView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		if(Formatting.isEmptyOrNull(rInput)){
+			setText("1");
+		}
 		rTemperature = new Temperature(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 		setResults(rTemperature.getValues());
 	}
