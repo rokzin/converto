@@ -54,23 +54,14 @@ public class ConversionTypes {
 
 		return speedTypes;
 	}
-	/*
-	 * allowed type parameter values
-	 * 0. m/s
-	 * 1. mile/hr
-	 * 2. mile/min
-	 * 3. mile/sec
-	 * 4. Speed of light (Vac)
-	 * 5. Speed of sound
-	 * 6. km/hr
-	 * 7. inch/sec
-	 * 8. inch/min
-	 * 9. inch/hr
-	 * 10. ft/sec
-	 * 11. ft/min
-	 * 12. ft/hr
-	 */
+	
+	public static String[] getPressureTypes() {
 
+		String pressureTypes[] = { "atm(Std)","atm(Tech)","bar","cmHg","cmH2O","ftHg","ftH2O","inHg","inH2O","ksi","mmHg","mmH2O","Pa","psf","psi","torr"};
+
+		return pressureTypes;
+	}
+	
 	
 	
 }
