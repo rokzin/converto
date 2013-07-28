@@ -67,6 +67,7 @@ public class MassView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		super.reinitialize();
 		rMass = new Mass(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 		setResults(rMass.getValues());
 

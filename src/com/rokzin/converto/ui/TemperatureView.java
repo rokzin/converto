@@ -68,6 +68,7 @@ public class TemperatureView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		super.reinitialize();
 		if(Formatting.isEmptyOrNull(rInput)){
 			setText("1");
 		}

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.rokzin.converto.R;
 import com.rokzin.converto.core.ResultItem;
 import com.rokzin.converto.storage.Store;
+import com.rokzin.converto.utils.Formatting;
 
 public class CustomView extends RelativeLayout implements OnItemClickListener, OnItemLongClickListener{
 	Context rContext;
@@ -188,6 +189,11 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 	
 	public String getText(){
 		return rInput.getText().toString();
+	}
+	protected void reinitialize(){
+		if(Formatting.isEmptyOrNull(rInput)){
+			setText("1");
+		}
 	}
 
 }

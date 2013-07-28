@@ -90,6 +90,7 @@ public class AngleView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		super.reinitialize();
 		rAngle = new Angle(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 		setResults(rAngle.getValues());
 

@@ -68,6 +68,7 @@ public class PressureView extends CustomView implements ICustomView {
 
 		@Override
 		public void reinitialize() {
+			super.reinitialize();
 			rPressure = new Pressure(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 			setResults(rPressure.getValues());
 

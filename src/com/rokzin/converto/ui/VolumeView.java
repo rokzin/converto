@@ -97,12 +97,8 @@ public class VolumeView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
-		if(!Formatting.isEmptyOrNull(rInput)){
+		super.reinitialize();
 		rVolume = new Volume(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
-		}
-		else{
-			rVolume = new Volume(rSpinner.getSelectedItemPosition(), 1);
-		}
 		setResults(rVolume.getValues());
 
 	}

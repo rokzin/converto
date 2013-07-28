@@ -70,6 +70,7 @@ public class PowerView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		super.reinitialize();
 		rPower = new Power(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 		setResults(rPower.getValues());
 

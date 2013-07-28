@@ -74,6 +74,7 @@ public class AreaView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		super.reinitialize();
 		rArea = new Area(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 		setResults(rArea.getValues());
 

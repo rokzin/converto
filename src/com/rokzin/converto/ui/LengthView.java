@@ -68,6 +68,7 @@ public class LengthView extends CustomView implements ICustomView {
 
 	@Override
 	public void reinitialize() {
+		super.reinitialize();
 		rLength = new Length(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 		setResults(rLength.getValues());
 

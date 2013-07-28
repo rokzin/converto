@@ -68,6 +68,7 @@ public class SpeedView extends CustomView implements ICustomView {
 
 		@Override
 		public void reinitialize() {
+			super.reinitialize();
 			rSpeed = new Speed(rSpinner.getSelectedItemPosition(), Double.parseDouble(rInput.getText().toString()));
 			setResults(rSpeed.getValues());
 		}
