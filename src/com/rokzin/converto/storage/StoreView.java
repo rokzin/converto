@@ -7,17 +7,14 @@ import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.rokzin.converto.core.ICustomView;
-import com.rokzin.converto.utils.CustomObject;
 import com.rokzin.converto.utils.PreferenceSet;
 
-public class StoreView extends RelativeLayout implements ICustomView{
+public class StoreView extends ListView implements ICustomView{
 
 
 	private static Context rContext;
-	private static ListView list;
 
 	public StoreView(Context context) {
 		super(context);
@@ -37,8 +34,7 @@ public class StoreView extends RelativeLayout implements ICustomView{
 	
 	private void initialize() {
 		
-		list = new ListView(rContext);
-		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			loadPotraitView();
 		}
@@ -47,34 +43,23 @@ public class StoreView extends RelativeLayout implements ICustomView{
 		}
 		
 	}
-	
-	public static void addAndRefresh(String value) {
-		Store s = new Store(value,rContext);
-		ArrayList<StoreItem> l = s.retrieveValues();
-		list.setAdapter(new StoreItemBaseAdapter(rContext, l));
-	}
+
 
 	@Override
 	public void reinitialize() {
 		Store s = new Store();
 		ArrayList<StoreItem> l = s.retrieveValues();
-		list.setAdapter(new StoreItemBaseAdapter(rContext, l));
+		setAdapter(new StoreItemBaseAdapter(rContext, l));
 	}
 
 	@Override
 	public void loadLandscapeView() {
-		this.removeAllViews();
-		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
-		this.addView(list,lLP);
-		
+
 	}
 
 	@Override
 	public void loadPotraitView() {
-		this.removeAllViews();
 
-		RelativeLayout.LayoutParams lLP = CustomObject.getCustomParams(rContext.getResources().getDisplayMetrics().widthPixels, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
-		this.addView(list,lLP);
 		
 	}
 

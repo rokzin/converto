@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.rokzin.converto.R;
 import com.rokzin.converto.core.ResultItem;
-import com.rokzin.converto.storage.StoreView;
+import com.rokzin.converto.storage.Store;
 
 public class CustomView extends RelativeLayout implements OnItemClickListener, OnItemLongClickListener{
 	Context rContext;
@@ -174,8 +174,7 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		    		Toast.makeText(rContext,fullyQualifiedConversion + " copied to clipboard." , Toast.LENGTH_LONG).show();	
 		        }
 		        if(which==2){
-		        	StoreView.addAndRefresh(fullyQualifiedConversion);
-		        	
+		        	new Store(fullyQualifiedConversion,rContext);
 		        }
 		    }
 		});

@@ -290,12 +290,12 @@ public class ConvertoActivity extends Activity {
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
+		//super.onRestoreInstanceState(savedInstanceState);
 		
 		initialize();
 		int viewID = savedInstanceState.getInt("View ID");
 		
-		if(viewID!= 9 || viewID != 10){
+		if(viewID != 99){
 			((CustomView)allViews.get(viewID)).setText(savedInstanceState.getString("InputText"));
 			checkOrientationAndLoadView(1, allViews.get(viewID));
 		}
@@ -309,9 +309,9 @@ public class ConvertoActivity extends Activity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
+		//super.onSaveInstanceState(outState);
 		if(viewSwitcher.getCurrentView() instanceof StoreView  || viewSwitcher.getCurrentView() instanceof CurrencyView){
-		
+			outState.putInt("View ID", 99);
 		}
 		else{
 		outState.putInt("View ID", viewSwitcher.getCurrentView().getId());

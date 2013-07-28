@@ -70,6 +70,12 @@ public class ConversionTypes {
 	}
 	
 	
+	public static String[] getPowerTypes() {
+
+		String powerTypes[] = {"GW(Gigawatt)","MW(Megawatt)","KW(Kilowatt)","W(Watt)","Cal/s","KCals/s","Horsepower","ft-Lb-F/sec","J/s"};
+
+		return powerTypes;
+	}
 	
 	
 	
