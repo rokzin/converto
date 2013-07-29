@@ -3,6 +3,11 @@ package com.rokzin.converto.ui;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +17,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.View;
@@ -23,10 +29,12 @@ import android.widget.TextView;
 
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.currency.Currency;
+import com.rokzin.converto.currency.HttpURLRequest;
 import com.rokzin.converto.storage.StoreItem;
 import com.rokzin.converto.storage.StoreItemBaseAdapter;
 import com.rokzin.converto.utils.ConversionTypes;
 import com.rokzin.converto.utils.CustomObject;
+import com.rokzin.converto.utils.CustomStringBuilder;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 
@@ -127,20 +135,20 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 
 			if(i == 11 || i == 1 ){
 				if(!Formatting.isEmptyOrNull(type1Value)){
-					double from = rates.get(getLocation(currencyType1));
-					double to = rates.get(getLocation(currencyType2));
-					Currency c = new Currency(from,to, Double.valueOf(type1Value.getText().toString()));
-					type2Value.setText(String.valueOf(Formatting.roundOff(c.getResult())));
+					double from = rates.get(getLocation(currencyType2));
+					double to = rates.get(getLocation(currencyType1));
+					Currency c = new Currency(from,to, Double.valueOf(type2Value.getText().toString()));
+					type1Value.setText(String.valueOf(Formatting.roundOff(c.getResult())));
 				}
 				
 			}
 			
 			if(i == 22 || i==2 ){
 				if(!Formatting.isEmptyOrNull(type2Value)){
-					double from = rates.get(getLocation(currencyType2));
-					double to = rates.get(getLocation(currencyType1));
-					Currency c = new Currency(from, to, Double.valueOf(type2Value.getText().toString()));
-					type1Value.setText(String.valueOf(Formatting.roundOff(c.getResult())));
+					double from = rates.get(getLocation(currencyType1));
+					double to = rates.get(getLocation(currencyType2));
+					Currency c = new Currency(from, to, Double.valueOf(type1Value.getText().toString()));
+					type2Value.setText(String.valueOf(Formatting.roundOff(c.getResult())));
 				}
 			}
 	
@@ -160,7 +168,7 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	}
 
 	
-	public void getSavedRates() {
+	private void getSavedRates() {
 		
 		String curSavedValues = rContext.getSharedPreferences("com.rokzin.converto_preferences", 0).getString("CurrencyRates", "Error");
 
@@ -180,8 +188,8 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		
 		lastRefreshed = rContext.getSharedPreferences("com.rokzin.converto_preferences", 0).getLong("LastRefreshed", 0);
 		
-		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
-		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[133]);
+		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[121]);
+		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[121]);
 		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{}, 11);
 		type1Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{}, 22);
@@ -235,8 +243,10 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		removeAllListeners();
 		addListeners();
 		createBottomSection();
+
 		
 	}
+	
 	private void createBottomSection() {
 		TextView lastRefeshedView = new TextView(rContext);
 		
@@ -280,6 +290,8 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		removeAllListeners();
 		addListeners();
 		createBottomSection();
+
+		
 		
 	}
 
@@ -291,19 +303,19 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		Date lrdate = new Date(lastRefreshed);
 		ArrayList<StoreItem> l = new ArrayList<StoreItem>();
 		
-		Currency c = new Currency(rates.get(133), rates.get(41), 1);
+		Currency c = new Currency(rates.get(121), rates.get(38), 1);
 		StoreItem s = new StoreItem("1 USD = "+Formatting.roundOff(c.getResult())+" GBP", lrdate);
 		l.add(s);
 		
-		Currency c2 = new Currency(rates.get(133), rates.get(38), 1);
+		Currency c2 = new Currency(rates.get(121), rates.get(35), 1);
 		StoreItem s2 = new StoreItem("1 USD = "+Formatting.roundOff(c2.getResult())+" EUR", lrdate);
 		l.add(s2);
 		
-		Currency c3 = new Currency(rates.get(133), rates.get(55), 1);
+		Currency c3 = new Currency(rates.get(121), rates.get(51), 1);
 		StoreItem s3 = new StoreItem("1 USD = "+Formatting.roundOff(c3.getResult())+" INR", lrdate);
 		l.add(s3);
 		
-		Currency c4 = new Currency(rates.get(133), rates.get(23), 1);
+		Currency c4 = new Currency(rates.get(121), rates.get(23), 1);
 		StoreItem s4 = new StoreItem("1 USD = "+Formatting.roundOff(c4.getResult())+" CNY", lrdate);
 		l.add(s4);
 		
@@ -321,6 +333,46 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		type2Value.removeTextChangedListener(fCustomTextWatcher);
 		
 	}
+
+	public CustomStringBuilder getCurrencyRates() {
+
+			ExecutorService executor = Executors.newFixedThreadPool(1);
+
+
+			FutureTask<CustomStringBuilder> future = new FutureTask<CustomStringBuilder>(
+	                new Callable<CustomStringBuilder>()
+	                {
+
+						@Override
+						public CustomStringBuilder call() throws Exception {
+
+							String conversions="";
+							for (int i = 0; i < ConversionTypes.getCurrencyTypes().length; i++) {
+								conversions = conversions + "USD"+ ConversionTypes.getCurrencyTypes()[i]+"=X,";
+							}
+							String source = "http://finance.yahoo.com/d/quotes.csv?e=.csv&f=c4l1&s=" +conversions;
+							Log.d("ConverToLog", source);
+							HttpURLRequest httpRequest = new HttpURLRequest();
+							CustomStringBuilder results = httpRequest.connect(source);
+						return results;
+						}
+	                   
+	                });
+			executor.execute(future);
+
+		
+	        try {
+
+				return future.get();
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+	        return new CustomStringBuilder();
+		}
+
 	
 	
 

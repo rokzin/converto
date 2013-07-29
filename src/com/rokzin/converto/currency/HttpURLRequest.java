@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -14,18 +13,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
+import com.rokzin.converto.utils.CustomStringBuilder;
+
 public class HttpURLRequest  {
 	
-	private ArrayList<Double> rates = new ArrayList<Double>();
-
-	public ArrayList<Double> getResults() {
-		return rates;
-	}
-	public HttpURLRequest(String URL) {
-		connect(URL);
-	}
-
-	public void connect(String url)
+	public CustomStringBuilder connect(String url)
 	{
 
 	    HttpClient httpclient = new DefaultHttpClient();
@@ -40,34 +32,42 @@ public class HttpURLRequest  {
 	        if (entity != null) {
 
 	            InputStream instream = entity.getContent();
-	            convertStreamToString(instream);
+	            CustomStringBuilder results = convertStreamToString(instream);
 	            
 	            instream.close();
+	            return results;
 	        }
 
 
 	    } catch (Exception e) {
 	    	 Log.i("ConverToLog",e.toString());
 	    }
+		return new CustomStringBuilder();
 	}
 
-	private void convertStreamToString(InputStream is) {
+	private CustomStringBuilder convertStreamToString(InputStream is) {
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 	    String line = null;
+	    CustomStringBuilder csb = new CustomStringBuilder();
 	    try {
-	    	int i = 0;
+	    	int i =0;
+	    	
 	        while ((line = reader.readLine()) != null) {
-	        	i++;
 	            String splitLine[] = line.split(",");
 				String convertedValue = splitLine[1].replace("\"", "");
-				Log.i("ConverToLog","Adding "+convertedValue + " "+ i);
-				if(Double.valueOf(convertedValue)==0.0){
-					rates.add(Double.valueOf(1.0));
+				Log.i("ConverToLog","Adding "+convertedValue + " "+i);
+				
+				if(Double.parseDouble(convertedValue)==0.0){
+					csb.append(1);
+					csb.append(",");
+					
 				}
 				else{
-				
-					rates.add(Double.valueOf(convertedValue));
+					csb.append(convertedValue);
+					csb.append(",");
 				}
+				i++;
+	        
 	        }
 
 	    } catch (IOException e) {
@@ -76,12 +76,15 @@ public class HttpURLRequest  {
 	    } finally {
 	        try {
 	            is.close();
+	            return csb;
+	            
 
 	        } catch (IOException e) {
 	            e.printStackTrace();
 
 	        }
 	    }
+		return new CustomStringBuilder();
 	}
 
 

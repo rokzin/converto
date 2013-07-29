@@ -4,11 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +16,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -35,7 +31,6 @@ import android.widget.ViewSwitcher;
 
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
-import com.rokzin.converto.currency.HttpURLRequest;
 import com.rokzin.converto.storage.StoreView;
 import com.rokzin.converto.ui.AngleView;
 import com.rokzin.converto.ui.AreaView;
@@ -48,7 +43,7 @@ import com.rokzin.converto.ui.PressureView;
 import com.rokzin.converto.ui.SpeedView;
 import com.rokzin.converto.ui.TemperatureView;
 import com.rokzin.converto.ui.VolumeView;
-import com.rokzin.converto.utils.ConversionTypes;
+import com.rokzin.converto.utils.CustomStringBuilder;
 import com.rokzin.converto.utils.Formatting;
 import com.rokzin.converto.utils.PreferenceSet;
 import com.rokzin.converto.utils.SettingsActivity;
@@ -86,8 +81,14 @@ public class ConvertoActivity extends Activity {
 	
 	private ViewSwitcher viewSwitcher;
 
+	int showToast;
+	
 	private void checkOrientationAndLoadView(int state, View currentView) {
 
+		if(currentView instanceof CurrencyView){
+			if(shouldBeRefreshed())
+			setupCurrencyRates(currentView);
+		}
 		/*
 		 * 0: toggle silder
 		 * 1: don't toggle slider
@@ -118,6 +119,7 @@ public class ConvertoActivity extends Activity {
 
 	}
 
+	@SuppressLint("SdCardPath")
 	private void createStorageFile() {
 		File rDir = new File("/sdcard/converto/");
 		
@@ -165,56 +167,27 @@ public class ConvertoActivity extends Activity {
 			
 	}
 
-	private void getCurrencyRates() {
-
+	private void setupCurrencyRates(View v) {
+		 
 		if(isOnline()){
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-
-
-		FutureTask<String> future = new FutureTask<String>(
-                new Callable<String>()
-                {
-
-					@Override
-					public java.lang.String call() throws Exception {
-						ArrayList<Double> rates = new ArrayList<Double>();
-						String conversions="";
-						for (int i = 0; i < ConversionTypes.getCurrencyTypes().length; i++) {
-							conversions = conversions + ConversionTypes.getCurrencyTypes()[133]+ ConversionTypes.getCurrencyTypes()[i]+"=X,";
-						}
-						String source = "http://finance.yahoo.com/d/quotes.csv?e=.csv&f=c4l1&s=" +conversions;
-						Log.d("ConverToLog", source);
-						HttpURLRequest httpRequest = new HttpURLRequest(source);
-						;
-						for (Double result : httpRequest.getResults()) {
-							rates.add(result);
-						}
-
-						StringBuilder str = new StringBuilder();
-						for (Double rate : rates) {
-							str.append(rate).append(",");
-						}
-				        SharedPreferences.Editor prefEditor = rPreferences.edit();
-				        prefEditor.putString("CurrencyRates", str.toString());
-				        prefEditor.commit();
-				        
-					return "";
-					}
-                   
-                });
+			CustomStringBuilder results = ((CurrencyView)v).getCurrencyRates();
 		
-        executor.execute(future);
+			SharedPreferences.Editor prefEditor = rPreferences.edit();
+	        prefEditor.putString("CurrencyRates", results.toString());
+	        prefEditor.commit();
 
+	        //saving the last refreshed date to shared preferences
+	        Date date = new Date(System.currentTimeMillis());
+	        prefEditor.putLong("LastRefreshed", date.getTime());
+	        prefEditor.commit();
+	        //========================================================
+	        if(results.getSize()<278){
+	            Toast.makeText(rContext, "There was an error getting rates from the yahoo server.", Toast.LENGTH_SHORT).show();
 
-        //saving the last refreshed date to shared preferences
-        Date date = new Date(System.currentTimeMillis());
-        SharedPreferences.Editor prefEditor = rPreferences.edit();
-        prefEditor.putLong("LastRefreshed", date.getTime());
-        prefEditor.commit();
-        //========================================================
-        
-        Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
-        
+	        } 
+	        else{
+	        	Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
+	        }
 		}
 		else{
 			 Toast.makeText(rContext, "Network connection not detected.", Toast.LENGTH_SHORT).show();	
@@ -258,10 +231,6 @@ public class ConvertoActivity extends Activity {
 		rContext = getApplicationContext();
 		mSlideHolder = (SlideHolder) findViewById(R.id.slideHolder);
 		rPreferences = PreferenceManager.getDefaultSharedPreferences(ConvertoActivity.this);
-
-		if(shouldBeRefreshed()){
-			getCurrencyRates();
-		}
 
 		initialize();
 		viewSwitcher.addView(allViews.get(0));
@@ -332,7 +301,12 @@ public class ConvertoActivity extends Activity {
 				if (key.equals(PreferenceSet.PREF_ROUND_OFF)) {
 					Formatting.setRoundOff(Integer.parseInt(sP.getString(PreferenceSet.PREF_ROUND_OFF, "2")));
 					View v = viewSwitcher.getCurrentView();
+					if(v instanceof StoreView || v instanceof CurrencyView){
+						
+					}
+					else{
 					((CustomView) v).reEnterText();
+					}
 				}
 
 			}
