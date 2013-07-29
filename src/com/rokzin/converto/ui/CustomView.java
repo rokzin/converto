@@ -54,10 +54,10 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 
 	public void loadLandscapeView() {
 		removeAllViews();
-		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 1 / 3, 100);
+		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 1 / 3, LayoutParams.WRAP_CONTENT);
 		relativeParams.addRule(RelativeLayout.BELOW, rInput.getId());
 
-		RelativeLayout.LayoutParams relativeParams2 = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 1 / 3, 200);
+		RelativeLayout.LayoutParams relativeParams2 = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 1 / 3, LayoutParams.WRAP_CONTENT);
 		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
@@ -71,17 +71,17 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 
 	public void loadPotraitView() {
 		removeAllViews();
-		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 2 / 5, 120);
+		RelativeLayout.LayoutParams relativeParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 3 / 10,  LayoutParams.WRAP_CONTENT);
 		relativeParams.addRule(RelativeLayout.RIGHT_OF, rInput.getId());
 
-		RelativeLayout.LayoutParams relativeParams2 = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 3 / 5, 120);
-		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		relativeParams2.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		RelativeLayout.LayoutParams rInputParams = new RelativeLayout.LayoutParams(rContext.getResources().getDisplayMetrics().widthPixels * 7 / 10, LayoutParams.WRAP_CONTENT);
+		rInputParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+		rInputParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
 		RelativeLayout.LayoutParams relativeParams3 = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		relativeParams3.addRule(RelativeLayout.BELOW, rInput.getId());
 
-		this.addView(rInput, relativeParams2);
+		this.addView(rInput, rInputParams);
 		this.addView(rSpinner, relativeParams);
 		this.addView(rResultsView, relativeParams3);
 	}
@@ -90,7 +90,7 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 
 		rTitle = title;
 		rInput = new EditText(rContext);
-		rInput.setGravity(Gravity.RIGHT);
+		rInput.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 		rInput.setTextSize(35);
 		rInput.setTextColor(rContext.getResources().getColor(R.color.teal));
 		rInput.setHint("Enter a number");
@@ -100,13 +100,15 @@ public class CustomView extends RelativeLayout implements OnItemClickListener, O
 		rSpinner = new Spinner(rContext);
 		rSpinner.setId(2);
 		rSpinner.setPadding(0, 20, 5, 10);
+		rSpinner.setMinimumHeight(150);
 		rResultsView = new ResultsView(rContext);
 		rResultsView.setId(3);
 		rResultsView.setOnItemClickListener(this);
 		rResultsView.setOnItemLongClickListener(this);
 		rInput.setText("1");
+		rInput.setMinimumHeight(150);
 		
-		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
 			loadPotraitView();
 		}

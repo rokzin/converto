@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -18,6 +19,7 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	private Preference clearHistory;
 	public static String preferencesName;
+	private Preference contactDeveloper;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -62,6 +64,30 @@ public class SettingsActivity extends PreferenceActivity {
 				return true;
 			}
 		});
+		
+		contactDeveloper = findPreference(PreferenceSet.PREF_CONTACT_DEV);
+		contactDeveloper.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("message/rfc822");
+				i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"cnnovation@gmail.com"});
+				i.putExtra(Intent.EXTRA_SUBJECT, "ConverTo Issue");
+				i.putExtra(Intent.EXTRA_TEXT   , "Hello, \nThe issue I am facing with the app is described below : ");
+				try {
+				    startActivity(Intent.createChooser(i, "Send mail."));
+				} catch (android.content.ActivityNotFoundException ex) {
+				    Toast.makeText(SettingsActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+				}
+				return true;
+			}
+		});
+		
 	}
+	
+	
+	
+	
 
 }

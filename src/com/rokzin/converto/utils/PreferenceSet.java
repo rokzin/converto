@@ -23,6 +23,7 @@ public class PreferenceSet {
 
 	public static final String PREF_ROUND_OFF = "prefRoundOff";
 	public final static String PREF_CLEAR_HISTORY = "prefClearHistory";
+	public final static String PREF_CONTACT_DEV = "prefContactDev";
 	
 	public static List<String> getMenuItems() {
 		List<String> menu_items = new ArrayList<String>();

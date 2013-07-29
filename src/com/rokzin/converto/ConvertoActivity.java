@@ -86,9 +86,12 @@ public class ConvertoActivity extends Activity {
 	private void checkOrientationAndLoadView(int state, View currentView) {
 
 		if(currentView instanceof CurrencyView){
-			if(shouldBeRefreshed())
-			setupCurrencyRates(currentView);
+			
+			if(!setupCurrencyRates(currentView)){
+				currentView = allViews.get(0);
+			}
 		}
+
 		/*
 		 * 0: toggle silder
 		 * 1: don't toggle slider
@@ -113,9 +116,7 @@ public class ConvertoActivity extends Activity {
 				((ICustomView) currentView).loadLandscapeView();
 				((ICustomView) currentView).reinitialize();
 		}
-		
-		
-		
+
 
 	}
 
@@ -167,30 +168,38 @@ public class ConvertoActivity extends Activity {
 			
 	}
 
-	private void setupCurrencyRates(View v) {
-		 
-		if(isOnline()){
-			CustomStringBuilder results = ((CurrencyView)v).getCurrencyRates();
-		
-			SharedPreferences.Editor prefEditor = rPreferences.edit();
-	        prefEditor.putString("CurrencyRates", results.toString());
-	        prefEditor.commit();
-
-	        //saving the last refreshed date to shared preferences
-	        Date date = new Date(System.currentTimeMillis());
-	        prefEditor.putLong("LastRefreshed", date.getTime());
-	        prefEditor.commit();
-	        //========================================================
-	        if(results.getSize()<278){
-	            Toast.makeText(rContext, "There was an error getting rates from the yahoo server.", Toast.LENGTH_SHORT).show();
-
-	        } 
-	        else{
-	        	Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
-	        }
+	private boolean setupCurrencyRates(View v) {
+		if(shouldBeRefreshed()){
+			if(isOnline()){
+				CustomStringBuilder results = ((CurrencyView)v).getCurrencyRates();
+				
+				
+		        if(results.getSize()<278){
+		            Toast.makeText(rContext, "There was an error getting rates from the yahoo server.", Toast.LENGTH_SHORT).show();
+		            return false;
+		        } 
+		        else{
+		        	Toast.makeText(rContext, "Currency rates refreshed", Toast.LENGTH_SHORT).show();
+		        	
+		        	SharedPreferences.Editor prefEditor = rPreferences.edit();
+			        prefEditor.putString("CurrencyRates", results.toString());
+			        prefEditor.commit();
+	
+			        //saving the last refreshed date to shared preferences
+			        Date date = new Date(System.currentTimeMillis());
+			        prefEditor.putLong("LastRefreshed", date.getTime());
+			        prefEditor.commit();
+			        //========================================================
+			        return true;
+		        }
+			}
+			else{
+				 Toast.makeText(rContext, "Network connection not detected.", Toast.LENGTH_SHORT).show();	
+				 return false;
+			}
 		}
 		else{
-			 Toast.makeText(rContext, "Network connection not detected.", Toast.LENGTH_SHORT).show();	
+			return true;
 		}
 		
 	}

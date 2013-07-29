@@ -62,24 +62,37 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		}
 	}
 	
-	private class CustomTextWatcher implements TextWatcher{
+	private class TextWatcher1 implements TextWatcher{
 
-		int ID;
 		@Override
 		public void afterTextChanged(Editable s) {
-			convert(ID);
+			convert(2);
 			
 		}
 
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count,
 				int after) {
-			if(s.toString().equals(type1Value.getText().toString())){
-				ID=11;
-			}
-			else{
-				ID=22;
-			}
+			
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {}
+		
+	}
+	
+	private class TextWatcher2 implements TextWatcher{
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			convert(1);
+			
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
 			
 		}
 
@@ -97,13 +110,16 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	private LayoutParams type1ValueLP;
 	private EditText type2Value;
 	private LayoutParams type2ValueLP;
-	private CustomTextWatcher fCustomTextWatcher = new CustomTextWatcher();
+	private TextWatcher1 tw1 = new TextWatcher1();
+	private TextWatcher2 tw2 = new TextWatcher2();
+	
 	private ArrayList<Double> rates = new ArrayList<Double>();
 	private Context rContext;
 	private int screenWidth;
 	
 	private ListView rPopularConversions;
 	private long lastRefreshed;
+	private TextView lastRefeshedView;
 	
 
 	public CurrencyView(Context context) {
@@ -126,15 +142,15 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	}
 
 	private void addEditTextListeners() {
-		type1Value.addTextChangedListener(fCustomTextWatcher);
-		type2Value.addTextChangedListener(fCustomTextWatcher);
+		type1Value.addTextChangedListener(tw1);
+		type2Value.addTextChangedListener(tw2);
 	}
 
 	private void convert(int i) {
 		removeAllListeners();
 
-			if(i == 11 || i == 1 ){
-				if(!Formatting.isEmptyOrNull(type1Value)){
+			if(i == 1 ){
+				if(!Formatting.isEmptyOrNull(type2Value)){
 					double from = rates.get(getLocation(currencyType2));
 					double to = rates.get(getLocation(currencyType1));
 					Currency c = new Currency(from,to, Double.valueOf(type2Value.getText().toString()));
@@ -143,8 +159,8 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 				
 			}
 			
-			if(i == 22 || i==2 ){
-				if(!Formatting.isEmptyOrNull(type2Value)){
+			if(i==2 ){
+				if(!Formatting.isEmptyOrNull(type1Value)){
 					double from = rates.get(getLocation(currencyType1));
 					double to = rates.get(getLocation(currencyType2));
 					Currency c = new Currency(from, to, Double.valueOf(type1Value.getText().toString()));
@@ -186,14 +202,19 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 
 	private void initialize() {
 		
-		lastRefreshed = rContext.getSharedPreferences("com.rokzin.converto_preferences", 0).getLong("LastRefreshed", 0);
+		
 		
 		currencyType1 = CustomObject.getCustomTextView(rContext, 1, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[121]);
 		currencyType2 = CustomObject.getCustomTextView(rContext, 2, Color.parseColor("#63879F"), Color.WHITE, 16, ConversionTypes.getCurrencyTypes()[121]);
+		currencyType1.setMinimumHeight(140);
+		currencyType2.setMinimumHeight(140);
+		
 		type1Value = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{}, 11);
 		type1Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		type2Value  = CustomObject.getCustomInputBox(rContext, 35, "1", "Enter value", new int[]{}, 22);
 		type2Value.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		type1Value.setMinimumHeight(140);
+		type2Value.setMinimumHeight(140);
 		
 		int orientation = ((WindowManager) rContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		if (orientation == Surface.ROTATION_0 || orientation == Surface.ROTATION_180) {
@@ -211,6 +232,7 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 
 	@Override
 	public void loadLandscapeView() {
+		lastRefreshed = rContext.getSharedPreferences("com.rokzin.converto_preferences", 0).getLong("LastRefreshed", 0);
 		screenWidth = rContext.getResources().getDisplayMetrics().widthPixels;
 	
 		removeAllViews();
@@ -219,11 +241,11 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		RelativeLayout.LayoutParams listLP = CustomObject.getCustomParams(screenWidth, LayoutParams.WRAP_CONTENT, new int[]{});
 		listLP.addRule(RelativeLayout.BELOW, type2Value.getId());
 		
-		currencyType1LP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
-		currencyType2LP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.ALIGN_PARENT_TOP});
+		currencyType1LP = CustomObject.getCustomParams(screenWidth * 9/20, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
+		currencyType2LP = CustomObject.getCustomParams(screenWidth * 9/20, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT,RelativeLayout.ALIGN_PARENT_TOP});
 		
-		type1ValueLP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT});
-		type2ValueLP = CustomObject.getCustomParams(screenWidth * 9/20, 120, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT});
+		type1ValueLP = CustomObject.getCustomParams(screenWidth * 9/20, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_LEFT});
+		type2ValueLP = CustomObject.getCustomParams(screenWidth * 9/20, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_RIGHT});
 		
 		type1ValueLP.addRule(RelativeLayout.BELOW, currencyType1.getId());
 		type2ValueLP.addRule(RelativeLayout.BELOW, currencyType2.getId());
@@ -243,14 +265,13 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		removeAllListeners();
 		addListeners();
 		createBottomSection();
-
 		
 	}
 	
 	private void createBottomSection() {
-		TextView lastRefeshedView = new TextView(rContext);
+		lastRefeshedView = new TextView(rContext);
 		
-		RelativeLayout.LayoutParams params = CustomObject.getCustomParams(screenWidth, 50, new int[]{RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL});
+		RelativeLayout.LayoutParams params = CustomObject.getCustomParams(screenWidth, 70, new int[]{RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.CENTER_HORIZONTAL});
 		
 		lastRefeshedView.setText(new Date(lastRefreshed).toString());
 		lastRefeshedView.setBackgroundColor(Color.parseColor("#63879F"));
@@ -259,9 +280,14 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		this.addView(lastRefeshedView, params);
 		
 	}
+	
+	public void setLastRefreshedDate(Date date){
+		lastRefeshedView.setText(date.toString());
+	}
 
 	@Override
 	public void loadPotraitView() {
+		lastRefreshed = rContext.getSharedPreferences("com.rokzin.converto_preferences", 0).getLong("LastRefreshed", 0);
 		screenWidth = rContext.getResources().getDisplayMetrics().widthPixels;
 	
 		removeAllViews();
@@ -270,11 +296,11 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		RelativeLayout.LayoutParams listLP = CustomObject.getCustomParams(screenWidth, LayoutParams.WRAP_CONTENT, new int[]{});
 		listLP.addRule(RelativeLayout.BELOW, currencyType2.getId());
 		
-		currencyType1LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
-		currencyType2LP = CustomObject.getCustomParams(screenWidth * 1/3, 120, new int[]{});
+		currencyType1LP = CustomObject.getCustomParams(screenWidth * 1/3, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_LEFT,RelativeLayout.ALIGN_PARENT_TOP});
+		currencyType2LP = CustomObject.getCustomParams(screenWidth * 1/3, LayoutParams.WRAP_CONTENT, new int[]{});
 		
-		type1ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, 120, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
-		type2ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, 120, new int[]{});
+		type1ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, LayoutParams.WRAP_CONTENT, new int[]{RelativeLayout.ALIGN_PARENT_TOP});
+		type2ValueLP = CustomObject.getCustomParams(screenWidth * 2/3, LayoutParams.WRAP_CONTENT, new int[]{});
 		
 		type1ValueLP.addRule(RelativeLayout.RIGHT_OF, currencyType1.getId());
 		type2ValueLP.addRule(RelativeLayout.BELOW, currencyType1.getId());
@@ -321,6 +347,7 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 		
 		rPopularConversions.setAdapter(new StoreItemBaseAdapter(rContext, l));
 
+
 	}
 
 	@Override
@@ -329,8 +356,8 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	}
 	
 	public void removeAllListeners(){
-		type1Value.removeTextChangedListener(fCustomTextWatcher);
-		type2Value.removeTextChangedListener(fCustomTextWatcher);
+		type1Value.removeTextChangedListener(tw1);
+		type2Value.removeTextChangedListener(tw2);
 		
 	}
 
@@ -362,7 +389,6 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 
 		
 	        try {
-
 				return future.get();
 				
 			} catch (InterruptedException e) {

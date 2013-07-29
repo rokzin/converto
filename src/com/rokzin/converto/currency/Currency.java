@@ -1,5 +1,7 @@
 package com.rokzin.converto.currency;
 
+import com.rokzin.converto.utils.Formatting;
+
 
 public class Currency {
 
@@ -14,7 +16,7 @@ public class Currency {
 
 	
 	public Double getResult(){
-		return result;
+		return Formatting.roundOff(result);
 	}
 
 
