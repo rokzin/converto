@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -386,6 +388,19 @@ public class CurrencyView extends RelativeLayout implements ICustomView{
 	                   
 	                });
 			executor.execute(future);
+			try {
+				future.get(3000, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e1) {
+				Log.e("convertolog", e1.toString() + "\nInterruption\n" + "Failed at future.get(3000,TIMEUnit.MILLISECONDS);");
+				e1.printStackTrace();
+			} catch (ExecutionException e1) {
+				Log.e("convertolog", e1.toString() + "\nExecution\n" + "Failed at future.get(3000,TIMEUnit.MILLISECONDS);");
+				e1.printStackTrace();
+			} catch (TimeoutException e1) {
+				Log.e("convertolog", e1.toString() + "\nTimeout\n" + "Failed at future.get(3000,TIMEUnit.MILLISECONDS);");
+				e1.printStackTrace();
+			}
+			
 
 		
 	        try {

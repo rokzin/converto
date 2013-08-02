@@ -6,6 +6,8 @@
     <string name="menu_settings">test</string>
     <string name="swipe">swipe</string>
     <string name="type">Type</string>
+    <string name="allow">Allowed</string>
+    <string name="dont_allow">Not Allowed</string>
     
     <string name="textBoxHint">Enter a number</string>
             <string name="textBoxHintLand">Value</string>

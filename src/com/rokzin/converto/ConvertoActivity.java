@@ -7,7 +7,9 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -16,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings.Secure;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -29,6 +32,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.android.vending.licensing.AESObfuscator;
+import com.google.android.vending.licensing.LicenseChecker;
+import com.google.android.vending.licensing.LicenseCheckerCallback;
+import com.google.android.vending.licensing.Policy;
+import com.google.android.vending.licensing.ServerManagedPolicy;
 import com.rokzin.converto.core.ICustomView;
 import com.rokzin.converto.core.SlideHolder;
 import com.rokzin.converto.storage.StoreView;
@@ -50,7 +58,21 @@ import com.rokzin.converto.utils.SettingsActivity;
 
 //Robin - Rohit
 public class ConvertoActivity extends Activity {
+	
+	private static final String BASE64_PUBLIC_KEY ="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwhW5PuSSvJI+zpEB/2Q3jNPe3oy+XVqCeFthF8FOju5TYRy6DQwIoRjFlOIp4U7XvLeUvNhJ76vGd6pckof7G6BJPrA/S/x7p4yjK9tmuGT0PDgunPIq5A5bTJSIMiCkHLGiCyMf6sztw1jSqxPJdIVhY3ORSkE5XR7lOJo2Keh1pGjJ0SeAaZzVE6+SEvfAE3DEKJsVSLqWXdeFh/Trpg59IBYb2dZMdOK6FHkN1UtFxT20Hn7ankp+7Vv8cV0/xsX/dy1IN3Kn4uZQAbG+IhXZdZl9pN8okC2G759OzJR9JeCfqscB4eBU2gl8reK0A8Wxa0T1H5tO59+/WYXcaQIDAQAB";
 
+	private LicenseCheckerCallback mLicenseCheckerCallback;
+    private LicenseChecker mChecker;
+    
+ // Generate 20 random bytes, and put them here.
+    private static final byte[] SALT = new byte[] {
+     -120, 110, 100, -90, -80, -70, 60, -50, 40, 30, -20,
+     -31, 41, -51, -61, -71, -81, 91, -101, 111
+     };
+    
+    private String LICENSED_APP_ID;
+    
+    
 	private class CustomMenuItemListener implements OnMenuItemClickListener{
 
 		@Override
@@ -82,9 +104,13 @@ public class ConvertoActivity extends Activity {
 	private ViewSwitcher viewSwitcher;
 
 	int showToast;
-	
-	private void checkOrientationAndLoadView(int state, View currentView) {
 
+	
+	
+	private void checkOrientationAndLoadView(int state, View v) {
+
+		View currentView = v;
+		
 		if(currentView instanceof CurrencyView){
 			
 			if(!setupCurrencyRates(currentView)){
@@ -236,8 +262,23 @@ public class ConvertoActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_converto);
+		
 		rContext = getApplicationContext();
+		LICENSED_APP_ID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
+		
+		// Construct the LicenseCheckerCallback. The library calls this when done.
+        mLicenseCheckerCallback = new MyLicenseCheckerCallback();
+
+        // Construct the LicenseChecker with a Policy.
+        mChecker = new LicenseChecker(
+            this, new ServerManagedPolicy(this,
+                new AESObfuscator(SALT, getPackageName(), LICENSED_APP_ID)),
+            BASE64_PUBLIC_KEY  // Your public licensing key.
+            );
+        
+        doCheck();
+		setContentView(R.layout.main_converto);
+		
 		mSlideHolder = (SlideHolder) findViewById(R.id.slideHolder);
 		rPreferences = PreferenceManager.getDefaultSharedPreferences(ConvertoActivity.this);
 
@@ -245,6 +286,17 @@ public class ConvertoActivity extends Activity {
 		viewSwitcher.addView(allViews.get(0));
 	}
 	
+	 private void doCheck() {
+	        setProgressBarIndeterminateVisibility(true);
+	        mChecker.checkAccess(mLicenseCheckerCallback);
+	    }
+	 
+	 @Override
+	protected void onDestroy() {
+		
+		super.onDestroy();
+		mChecker.onDestroy();
+	}
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu) {
 		this.options = menu;
@@ -351,7 +403,9 @@ public class ConvertoActivity extends Activity {
 		Date now = new Date();
 		Date lr = new Date(rPreferences.getLong("LastRefreshed", 0));
 
-		
+		if(rPreferences.getLong("LastRefreshed", 0)==0){
+			return true;
+		}
 		if(now.after(lr)){
 
 			if(now.getDay() == lr.getDay() && (now.getHours() - lr.getHours()<2)){
@@ -362,6 +416,61 @@ public class ConvertoActivity extends Activity {
 	}
 
 
+	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+	    public void allow(int reason) {
+	        if (isFinishing()) {
+	            // Don't update UI if Activity is finishing.
+	            return;
+	        }
+	        // Should allow user access.
+	        displayResult(getString(R.string.allow));
+	    }
 
+	    private void displayResult(String string) {
+			//Toast.makeText(rContext, string, Toast.LENGTH_SHORT).show();
+			
+		}
+
+		public void dontAllow(int reason) {
+	        if (isFinishing()) {
+	            // Don't update UI if Activity is finishing.
+	            return;
+	        }
+	        displayResult(getString(R.string.dont_allow));
+	        
+	        if (reason == Policy.RETRY) {
+	            // If the reason received from the policy is RETRY, it was probably
+	            // due to a loss of connection with the service, so we should give the
+	            // user a chance to retry. So show a dialog to retry.
+	            displayResult("There was an error making the connection. Please retry.");
+	        } else {
+	            // Otherwise, the user is not licensed to use this app.
+	            // Your response should always inform the user that the application
+	            // is not licensed, but your behavior at that point can vary. You might
+	            // provide the user a limited access version of your app or you can
+	            // take them to Google Play to purchase the app.
+	        	AlertDialog.Builder alertDialog= new AlertDialog.Builder(ConvertoActivity.this); 
+	            alertDialog.setTitle("App not purchased");
+	            alertDialog.setMessage("License for this application cannot be verified. Please go to Google Play to purchase the App.");
+	            alertDialog.setPositiveButton("Go!", new DialogInterface.OnClickListener() {
+
+	                @Override
+	                public void onClick(DialogInterface dialog, int which) {
+	                   
+
+	                }
+	            });
+	           
+	            alertDialog.show();
+	        }
+	    }
+
+		@Override
+		public void applicationError(int errorCode) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+	
 
 }
